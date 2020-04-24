@@ -12,9 +12,9 @@ List<Reserva> getReservasDia(DateTime dia, int servei, int torn) {
   Reserva reserva1 = Reserva(
       0001, 1, 1, 'Morató', '608492147', 1, 'Clients VIP', Hora(21, 30), 2);
   Reserva reserva2 = Reserva(0002, 1, 1, 'Garcia', '605367557', 3,
-      'Alergico al Aguacate', Hora(21, 30), 2);
+      'Alergico al Aguacate', Hora(21, 30), 1);
   Reserva reserva3 =
-      Reserva(0003, 1, 1, 'Pascual', '934181242', 4, '', Hora(21, 30), 2);
+      Reserva(0003, 1, 1, 'Pascual', '934181242', 4, '', Hora(21, 30), 3);
   Reserva reserva4 =
       Reserva(0004, 1, 1, 'Pujol', '63002200', 5, '', Hora(21, 30), 2);
   Reserva reserva5 =

@@ -103,12 +103,24 @@ class TaulesGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(crossAxisCount: 3, children: <Widget>[
-      for (var taula in _taules.taulesInfoList)
-        GridTile(
-          child: TaulaStack(taula: taula),
-        )
-    ]);
+    return Column(
+      children: <Widget>[
+        RaisedButton(onPressed: (){}),
+        Flexible(
+          flex:1,
+          child: GridView.count(
+              crossAxisCount: 3,
+              //shrinkWrap: true,
+              //physics: ScrollPhysics(),
+              children: <Widget>[
+                for (var taula in _taules.taulesInfoList)
+                  GridTile(
+                    child: TaulaStack(taula: taula),
+                  )
+              ]),
+        ),
+      ],
+    );
   }
 }
 
@@ -170,7 +182,9 @@ class TaulaInfoCardId extends StatelessWidget {
               margin: EdgeInsets.only(top: 6),
               height: 30,
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 14, 47, 65),
+                color: (taula.isreserva
+                    ? Color.fromARGB(255, 14, 47, 65)
+                    : Colors.grey),
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.zero,
                     topRight: Radius.zero,
@@ -254,13 +268,16 @@ class TaulaInfoCardNom extends StatelessWidget {
 class IndicadorEstat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final taula = Provider.of<Taula>(context);
     return Container(
       //indicador estat
       margin: EdgeInsets.only(left: 27, top: 2),
       width: 35,
       height: 40,
       decoration: BoxDecoration(
-          color: Colors.red,
+          color: (taula.isreserva
+              ? taula.reserva.getColorEstat()
+              : Color.fromARGB(0, 250, 62, 87)),
           borderRadius: BorderRadius.all(Radius.circular(5))),
     );
   }
