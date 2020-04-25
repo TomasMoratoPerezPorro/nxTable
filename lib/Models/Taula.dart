@@ -14,11 +14,12 @@ class Taula {
 class TaulesList {
   List<Taula> taulesInfoList = [];
   TaulesList(this.taulesInfoList);
+  TaulesList.empty() {
+    taulesInfoList = [];
+  }
 
   Taula getTaula(int index) => taulesInfoList[index];
   List<Taula> getTaules() => taulesInfoList;
-
-
 
   static Future<TaulesList> getLlistaTaules(DateTime dia, int servei, int torn,
       List<TaulaFisica> taulesFisiques) async {
