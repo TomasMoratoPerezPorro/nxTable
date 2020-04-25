@@ -35,6 +35,7 @@ class MainPageProvider with ChangeNotifier {
     TaulesList.getLlistaTaules(DateTime.now(), 1, 1, taulesFisiquesProva)
         .then((llistataules) {
       _taules = llistataules;
+      notifyListeners();
     });
   }
 
@@ -54,6 +55,7 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return ChangeNotifierProvider<MainPageProvider>(
       create: (_) => MainPageProvider(),
       child: Scaffold(
@@ -99,8 +101,9 @@ class MainPage extends StatelessWidget {
 class TaulesGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Provider.of<MainPageProvider>(context)._setTaulesList();
+     //Provider.of<MainPageProvider>(context)._setTaulesList();
     if (Provider.of<MainPageProvider>(context).taules == null) {
+      Provider.of<MainPageProvider>(context)._setTaulesList();
       return Center(child: CircularProgressIndicator());
     } else {
       final TaulesList _taules = Provider.of<MainPageProvider>(context).taules;

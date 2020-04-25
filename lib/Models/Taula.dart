@@ -47,10 +47,6 @@ class TaulesList {
     }
 
     var returnObject = TaulesList(returnListTaules);
-    //print('Objecte Final:----------------------------------------');
-    for (var taula in returnObject.taulesInfoList) {
-      //print('Taula: ${taula.id} - Reserva: ${taula?.reserva}');
-    }
 
     return returnObject;
   }
