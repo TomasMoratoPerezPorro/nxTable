@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prototip_tfg/Clases/Restaurant.dart';
+import 'package:prototip_tfg/Models/Restaurant.dart';
 
 //ESTAT 1= Tronja; 2= Blau; 3= Verd; 4=Vermell
 

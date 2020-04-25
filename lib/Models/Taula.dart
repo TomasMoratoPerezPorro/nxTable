@@ -1,6 +1,6 @@
-import 'package:prototip_tfg/Clases/Reserva.dart';
-import 'package:prototip_tfg/Clases/ReservasDia.dart';
-import 'package:prototip_tfg/Clases/Restaurant.dart';
+import 'package:prototip_tfg/Models/Reserva.dart';
+import 'package:prototip_tfg/Models/ReservasDia.dart';
+import 'package:prototip_tfg/Models/Restaurant.dart';
 
 class Taula {
   int id;

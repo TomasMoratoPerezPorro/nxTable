@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:prototip_tfg/Clases/Restaurant.dart';
-import 'package:prototip_tfg/Clases/Taula.dart';
+import 'package:prototip_tfg/Models/Restaurant.dart';
+import 'package:prototip_tfg/Models/Taula.dart';
 import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
