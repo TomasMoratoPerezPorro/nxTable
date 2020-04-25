@@ -37,6 +37,16 @@ class MainPageProvider with ChangeNotifier {
       _taules = llistataules;
     });
   }
+
+  _changeTaulesList(int servei, int torn) {
+    TaulesList.getLlistaTaules(DateTime.now(), 1, torn, taulesFisiquesProva)
+        .then((llistataules) {
+      _taules = llistataules;
+    });
+    notifyListeners();
+  }
+
+
 }
 
 class MainPage extends StatelessWidget {
@@ -121,7 +131,7 @@ class TaulesGrid extends StatelessWidget {
                           "Turno 1",
                           style: TextStyle(fontSize: 16),
                         ),
-                        onPressed: () {},
+                        onPressed: () {Provider.of<MainPageProvider>(context, listen: false)._changeTaulesList(1,1);},
                       ),
                     ),
                     SizedBox(
@@ -132,7 +142,7 @@ class TaulesGrid extends StatelessWidget {
                           "Turno 2",
                           style: TextStyle(fontSize: 16),
                         ),
-                        onPressed: () {},
+                        onPressed: () {Provider.of<MainPageProvider>(context, listen: false)._changeTaulesList(1,2);},
                       ),
                     ),
                   ],
