@@ -3,6 +3,8 @@ import 'package:prototip_tfg/Models/Restaurant.dart';
 import 'package:prototip_tfg/Models/Taula.dart';
 import 'package:provider/provider.dart';
 
+final Color bgColor = const Color.fromARGB(255, 248, 246, 242);
+
 class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
@@ -101,24 +103,76 @@ class TaulesGrid extends StatelessWidget {
 
   final TaulesList _taules;
 
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        RaisedButton(onPressed: (){}),
-        Flexible(
-          flex:1,
-          child: GridView.count(
-              crossAxisCount: 3,
-              //shrinkWrap: true,
-              //physics: ScrollPhysics(),
-              children: <Widget>[
-                for (var taula in _taules.taulesInfoList)
-                  GridTile(
-                    child: TaulaStack(taula: taula),
-                  )
-              ]),
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverAppBar(
+          backgroundColor: bgColor,
+          floating: false,
+          pinned: false,
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(10),
+            child: Container(),
+          ),
+          flexibleSpace: FlexibleSpaceBar(
+            centerTitle: true,
+            title: Container(
+              margin: EdgeInsets.only(top: 10),
+              padding: EdgeInsets.only(right: 40, left: 40),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 40,
+                    width: 100,
+                    child: RaisedButton(
+                      child: Text(
+                        "Turno 1",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      onPressed: () {},
+                    ),
+                  ),
+                  SizedBox(
+                    height: 40,
+                    width: 100,
+                    child: RaisedButton(
+                      child: Text(
+                        "Turno 2",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            background: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: Colors.black26,
+                    width: 1.0,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
+        SliverGrid(
+          gridDelegate:
+              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              if (index > _taules.taulesInfoList.length - 1) return null;
+              return TaulaStack(taula: _taules.taulesInfoList[index]);
+            },
+            childCount: _taules.taulesInfoList.length,
+          ),
+        )
       ],
     );
   }
