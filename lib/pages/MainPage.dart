@@ -46,8 +46,6 @@ class MainPageProvider with ChangeNotifier {
     });
     notifyListeners();
   }
-
-
 }
 
 class MainPage extends StatelessWidget {
@@ -55,7 +53,6 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return ChangeNotifierProvider<MainPageProvider>(
       create: (_) => MainPageProvider(),
       child: Scaffold(
@@ -63,6 +60,7 @@ class MainPage extends StatelessWidget {
         appBar: AppBar(
           title: Center(child: Text('NxTable')),
           backgroundColor: mainColor,
+          bottom: TabBar(tabs: [Text("Comida"), Text("Cena")]),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
@@ -92,7 +90,12 @@ class MainPage extends StatelessWidget {
             ],
           ),
         ),
-        body: TaulesGrid(),
+        body: TabBarView(
+          children: <Widget>[
+            TaulesGrid(),
+            TaulesGrid(),
+          ],
+        ),
       ),
     );
   }
@@ -101,7 +104,7 @@ class MainPage extends StatelessWidget {
 class TaulesGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-     //Provider.of<MainPageProvider>(context)._setTaulesList();
+    //Provider.of<MainPageProvider>(context)._setTaulesList();
     if (Provider.of<MainPageProvider>(context).taules == null) {
       Provider.of<MainPageProvider>(context)._setTaulesList();
       return Center(child: CircularProgressIndicator());
@@ -134,7 +137,10 @@ class TaulesGrid extends StatelessWidget {
                           "Turno 1",
                           style: TextStyle(fontSize: 16),
                         ),
-                        onPressed: () {Provider.of<MainPageProvider>(context, listen: false)._changeTaulesList(1,1);},
+                        onPressed: () {
+                          Provider.of<MainPageProvider>(context, listen: false)
+                              ._changeTaulesList(1, 1);
+                        },
                       ),
                     ),
                     SizedBox(
@@ -145,7 +151,10 @@ class TaulesGrid extends StatelessWidget {
                           "Turno 2",
                           style: TextStyle(fontSize: 16),
                         ),
-                        onPressed: () {Provider.of<MainPageProvider>(context, listen: false)._changeTaulesList(1,2);},
+                        onPressed: () {
+                          Provider.of<MainPageProvider>(context, listen: false)
+                              ._changeTaulesList(1, 2);
+                        },
                       ),
                     ),
                   ],
