@@ -46,4 +46,6 @@ class Restaurant {
   String nom;
   List<TaulaFisica> taulesFisiquesList;
   List<Servei> serveisList;
+
+  
 }

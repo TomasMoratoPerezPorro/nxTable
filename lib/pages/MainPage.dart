@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 final Color mainColor = const Color.fromARGB(255, 44, 64, 114);
 final Color bgColor = const Color.fromARGB(255, 248, 246, 242);
 final Color actionColor = const Color.fromARGB(255, 255, 210, 57);
+final Color disabledColor = const Color.fromARGB(50, 153, 153, 153);
 
 final List<TaulaFisica> taulesFisiquesProva = [
   TaulaFisica(1, 2),
@@ -28,21 +29,30 @@ final List<TaulaFisica> taulesFisiquesProva = [
 
 class MainPageProvider with ChangeNotifier {
   TaulesList _taules;
+  int _actualTorn;
+  int _actualServei;
 
   TaulesList get taules => _taules;
+  int get torn => _actualTorn;
+  int get servei => _actualServei;
 
-  _setTaulesList() {
-    TaulesList.getLlistaTaules(DateTime.now(), 1, 1, taulesFisiquesProva)
+  _setTaulesList(int servei) {
+    TaulesList.getLlistaTaules(DateTime.now(), servei, 1, taulesFisiquesProva)
         .then((llistataules) {
       _taules = llistataules;
+      _actualTorn = 1;
+      _actualServei = servei;
       notifyListeners();
     });
   }
 
   _changeTaulesList(int servei, int torn) {
-    TaulesList.getLlistaTaules(DateTime.now(), 1, torn, taulesFisiquesProva)
+    TaulesList.getLlistaTaules(
+            DateTime.now(), servei, torn, taulesFisiquesProva)
         .then((llistataules) {
       _taules = llistataules;
+      _actualTorn = torn;
+      _actualServei = servei;
     });
     notifyListeners();
   }
@@ -92,8 +102,8 @@ class MainPage extends StatelessWidget {
         ),
         body: TabBarView(
           children: <Widget>[
-            TaulesGrid(),
-            TaulesGrid(),
+            DinarTab(),
+            SoparTab(),
           ],
         ),
       ),
@@ -101,12 +111,50 @@ class MainPage extends StatelessWidget {
   }
 }
 
-class TaulesGrid extends StatelessWidget {
+class DinarTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider<MainPageProvider>(
+        create: (_) => MainPageProvider(),
+        child: TaulesGrid(
+          servei: 1,
+        ));
+  }
+}
+
+class SoparTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<MainPageProvider>(
+        create: (_) => MainPageProvider(),
+        child: TaulesGrid(
+          servei: 2,
+        ));
+  }
+}
+
+class TaulesGrid extends StatelessWidget {
+  const TaulesGrid({
+    Key key,
+    @required this.servei,
+  }) : super(key: key);
+
+  final int servei;
+
+  @override
+  Widget build(BuildContext context) {
+    Color getColor(int boto) {
+      int tornActual = Provider.of<MainPageProvider>(context).torn;
+      if (tornActual == boto) {
+        return actionColor;
+      } else {
+        return Colors.grey[350];
+      }
+    }
+
     //Provider.of<MainPageProvider>(context)._setTaulesList();
     if (Provider.of<MainPageProvider>(context).taules == null) {
-      Provider.of<MainPageProvider>(context)._setTaulesList();
+      Provider.of<MainPageProvider>(context)._setTaulesList(this.servei);
       return Center(child: CircularProgressIndicator());
     } else {
       final TaulesList _taules = Provider.of<MainPageProvider>(context).taules;
@@ -132,29 +180,37 @@ class TaulesGrid extends StatelessWidget {
                     SizedBox(
                       height: 40,
                       width: 100,
-                      child: RaisedButton(
-                        child: Text(
-                          "Turno 1",
-                          style: TextStyle(fontSize: 16),
+                      child: Consumer<MainPageProvider>(
+                        builder: (context, provider, _) => RaisedButton(
+                          color: getColor(1),
+                          child: Text(
+                            "Turno 1",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () {
+                            Provider.of<MainPageProvider>(context,
+                                    listen: false)
+                                ._changeTaulesList(this.servei, 1);
+                          },
                         ),
-                        onPressed: () {
-                          Provider.of<MainPageProvider>(context, listen: false)
-                              ._changeTaulesList(1, 1);
-                        },
                       ),
                     ),
                     SizedBox(
                       height: 40,
                       width: 100,
-                      child: RaisedButton(
-                        child: Text(
-                          "Turno 2",
-                          style: TextStyle(fontSize: 16),
+                      child: Consumer<MainPageProvider>(
+                        builder: (context, provider, _) => RaisedButton(
+                          color: getColor(2),
+                          child: Text(
+                            "Turno 2",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () {
+                            Provider.of<MainPageProvider>(context,
+                                    listen: false)
+                                ._changeTaulesList(this.servei, 2);
+                          },
                         ),
-                        onPressed: () {
-                          Provider.of<MainPageProvider>(context, listen: false)
-                              ._changeTaulesList(1, 2);
-                        },
                       ),
                     ),
                   ],
