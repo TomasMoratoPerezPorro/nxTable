@@ -17,6 +17,14 @@ final Reserva reserva7 =
     Reserva(0007, 1, 2, 'Harry', '650598080', 5, '', Hora(21, 30), 1);
 final Reserva reserva8 =
     Reserva(0008, 1, 2, 'Masmitja', '650598080', 3, '', Hora(21, 30), 3);
+final Reserva reserva9 =
+    Reserva(0008, 2, 2, 'Meló', '650598080', 3, '', Hora(21, 30), 3);
+final Reserva reserva10 =
+    Reserva(0008, 2, 1, 'Pinya', '650598080', 3, '', Hora(21, 30), 3);
+final Reserva reserva11 =
+    Reserva(0008, 2, 1, 'Platja', '650598080', 3, '', Hora(21, 30), 3);
+final Reserva reserva12 =
+    Reserva(0008, 2, 2, 'Miró', '650598080', 3, '', Hora(21, 30), 3);
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -37,6 +45,10 @@ List<Reserva> getReservasDia(DateTime dia, int servei, int torn) {
     reserva6,
     reserva7,
     reserva8,
+    reserva9,
+    reserva10,
+    reserva11,
+    reserva12,
   ];
 
   List<Reserva> returnReserves = [];
