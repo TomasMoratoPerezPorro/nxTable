@@ -285,8 +285,11 @@ class TaulaInfoCard extends StatelessWidget {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           splashColor: actionColor,
           onTap: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => DetailReservaPage(reserva: taula.reserva)));
+            if (taula.isreserva) {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      DetailReservaPage(reserva: taula.reserva)));
+            }
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,

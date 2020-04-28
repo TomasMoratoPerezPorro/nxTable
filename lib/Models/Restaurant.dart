@@ -39,6 +39,9 @@ class Hora {
   int hora;
   int minuts;
   Hora(this.hora, this.minuts);
+  String toString(){
+    return "${hora.toString()}:${minuts.toString()}";
+  }
 }
 
 class Restaurant {

@@ -19,7 +19,7 @@ class DetailReservaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('NxTable')),
+        title: Center(child: Container(margin: EdgeInsets.only(right: 30),child: Text("Mesa ${reserva.taula.toString()}: ${reserva.nom} "))),
         backgroundColor: mainColor,
       ),
       body: Padding(
@@ -52,47 +52,199 @@ class DetailsWidget extends StatelessWidget {
 class ReservaDetailsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: SizedBox(
+        width: double.infinity,
+        height: 400,
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              BarraEstatDetails(),
+              InfoReservaDetails(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class InfoReservaDetails extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     final reserva = Provider.of<Reserva>(context);
-    return SizedBox(
-      width: double.infinity,
-      height: 500,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          DetailsNameMesa(),
+          DetailsIcons(),
+          DetailsServeiTorn(),
+          DetailsComentaris(),
+        ],
+      ),
+    );
+  }
+}
+
+class DetailsComentaris extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final reserva = Provider.of<Reserva>(context);
+    return Container(
+      margin: EdgeInsets.only(bottom: 60),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            "Comentaris:  ",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Text("${reserva.comentaris}"),
+        ],
+      ),
+    );
+  }
+}
+
+class DetailsServeiTorn extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final reserva = Provider.of<Reserva>(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
           children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Text(
+              "Servei:  ",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(reserva.serveiToString()),
+          ],
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 7),
+          child: Row(
+            children: <Widget>[
+              Text(
+                "Torn:  ",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(reserva.torn.toString()),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class DetailsIcons extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final reserva = Provider.of<Reserva>(context);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
               children: <Widget>[
-                Expanded(
-                    flex: 1,
-                    child: Container(
-                      width: 20,
-                      decoration: BoxDecoration(
-                        color: reserva.getColorEstat(),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.zero,
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.zero,
-                        ),
-                      ),
-                    ))
+                Container(
+                    margin: EdgeInsets.only(right: 7),
+                    child: Icon(
+                      Icons.event,
+                      size: 20,
+                    )),
+                Text(reserva.getDia()),
               ],
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(reserva.nom),
-                Text(reserva.taula.toString()),
-                Text(reserva.telefon),
-              ],
+            Container(
+              margin: EdgeInsets.only(top: 5),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                      margin: EdgeInsets.only(right: 7),
+                      child: Icon(
+                        Icons.access_time,
+                        size: 20,
+                      )),
+                  Text(reserva.horaEntrada.toString()),
+                ],
+              ),
             ),
           ],
         ),
-      ),
+        Container(
+          margin: EdgeInsets.only(left: 30),
+          child: Row(
+            children: <Widget>[
+              Container(
+                  margin: EdgeInsets.only(right: 7),
+                  child: Icon(
+                    Icons.phone,
+                    size: 20,
+                  )),
+              Text(reserva.telefon.toString()),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class DetailsNameMesa extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final reserva = Provider.of<Reserva>(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          reserva.nom,
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 5),
+          child: Text("Mesa ${reserva.taula.toString()}"),
+        ),
+      ],
+    );
+  }
+}
+
+class BarraEstatDetails extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final reserva = Provider.of<Reserva>(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Expanded(
+            flex: 1,
+            child: Container(
+              width: 20,
+              decoration: BoxDecoration(
+                color: reserva.getColorEstat(),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.zero,
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.zero,
+                ),
+              ),
+            ))
+      ],
     );
   }
 }
