@@ -1,4 +1,7 @@
+
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:prototip_tfg/Models/Restaurant.dart';
 import 'package:prototip_tfg/Models/Taula.dart';
 import 'package:prototip_tfg/pages/DetailReservaPage.dart';
@@ -32,30 +35,51 @@ class MainPageProvider with ChangeNotifier {
   TaulesList _taules;
   int _actualTorn;
   int _actualServei;
+  DateTime _actualDia = DateTime.now();
 
   TaulesList get taules => _taules;
   int get torn => _actualTorn;
   int get servei => _actualServei;
 
   _setTaulesList(int servei) {
-    TaulesList.getLlistaTaules(DateTime.now(), servei, 1, taulesFisiquesProva)
+    TaulesList.getLlistaTaules(_actualDia, servei, 1, taulesFisiquesProva)
         .then((llistataules) {
       _taules = llistataules;
       _actualTorn = 1;
       _actualServei = servei;
+      debugPrint(_actualDia.toString());
+      
       notifyListeners();
     });
   }
 
-  _changeTaulesList(int servei, int torn) {
-    TaulesList.getLlistaTaules(
-            DateTime.now(), servei, torn, taulesFisiquesProva)
+  _changeTaulesList(_actualDia, int servei, int torn) {
+    TaulesList.getLlistaTaules(_actualDia, servei, torn, taulesFisiquesProva)
         .then((llistataules) {
       _taules = llistataules;
       _actualTorn = torn;
       _actualServei = servei;
     });
     notifyListeners();
+  }
+
+  _changeDay(bool direction) {
+    if (direction) {
+      _actualDia=_actualDia.add(Duration(hours: 24));
+      debugPrint(_actualDia.toString());
+      notifyListeners();      
+    }else{
+      _actualDia=_actualDia.add(Duration(hours: -24));
+      debugPrint(_actualDia.toString());
+      notifyListeners(); 
+    }
+  }
+
+  String getDia() {
+    var dt = _actualDia;
+    var newFormat = DateFormat("EEEE, dd MMMM");
+    String updatedDt = newFormat.format(dt);
+    return updatedDt;
   }
 }
 
@@ -69,7 +93,7 @@ class MainPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: bgColor,
         appBar: AppBar(
-          title: Center(child: Text('NxTable')),
+          title: MainPageAppBarTitle(),
           backgroundColor: mainColor,
           bottom: TabBar(
             indicatorColor: actionColor,
@@ -112,6 +136,32 @@ class MainPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class MainPageAppBarTitle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        InkWell(
+          onTap: () {
+            Provider.of<MainPageProvider>(context, listen: false)._changeDay(false);
+            Provider.of<MainPageProvider>(context,listen: false)._setTaulesList(1);
+          },
+          child: Icon(Icons.arrow_back),
+        ),
+        Text(Provider.of<MainPageProvider>(context, listen: true).getDia()),
+        InkWell(
+          onTap: () {
+            Provider.of<MainPageProvider>(context, listen: false)._changeDay(true);
+            Provider.of<MainPageProvider>(context,listen: false)._setTaulesList(1);
+          },
+          child: Icon(Icons.arrow_forward),
+        ),
+      ],
     );
   }
 }
@@ -195,7 +245,12 @@ class TaulesGrid extends StatelessWidget {
                           onPressed: () {
                             Provider.of<MainPageProvider>(context,
                                     listen: false)
-                                ._changeTaulesList(this.servei, 1);
+                                ._changeTaulesList(
+                                    Provider.of<MainPageProvider>(context,
+                                            listen: false)
+                                        ._actualDia,
+                                    this.servei,
+                                    1);
                           },
                         ),
                       ),
@@ -213,7 +268,12 @@ class TaulesGrid extends StatelessWidget {
                           onPressed: () {
                             Provider.of<MainPageProvider>(context,
                                     listen: false)
-                                ._changeTaulesList(this.servei, 2);
+                                ._changeTaulesList(
+                                    Provider.of<MainPageProvider>(context,
+                                            listen: false)
+                                        ._actualDia,
+                                    this.servei,
+                                    2);
                           },
                         ),
                       ),
