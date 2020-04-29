@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:prototip_tfg/Models/Restaurant.dart';
@@ -31,47 +29,19 @@ final List<TaulaFisica> taulesFisiquesProva = [
   TaulaFisica(16, 4),
 ];
 
-class MainPageProvider with ChangeNotifier {
-  TaulesList _taules;
-  int _actualTorn;
-  int _actualServei;
-  DateTime _actualDia = DateTime.now();
-
-  TaulesList get taules => _taules;
-  int get torn => _actualTorn;
-  int get servei => _actualServei;
-
-  _setTaulesList(int servei) {
-    TaulesList.getLlistaTaules(_actualDia, servei, 1, taulesFisiquesProva)
-        .then((llistataules) {
-      _taules = llistataules;
-      _actualTorn = 1;
-      _actualServei = servei;
-      debugPrint(_actualDia.toString());
-      
-      notifyListeners();
-    });
-  }
-
-  _changeTaulesList(_actualDia, int servei, int torn) {
-    TaulesList.getLlistaTaules(_actualDia, servei, torn, taulesFisiquesProva)
-        .then((llistataules) {
-      _taules = llistataules;
-      _actualTorn = torn;
-      _actualServei = servei;
-    });
-    notifyListeners();
-  }
+class DiaProvider with ChangeNotifier {
+  DateTime _actualDia;
+  DiaProvider(this._actualDia);
 
   _changeDay(bool direction) {
     if (direction) {
-      _actualDia=_actualDia.add(Duration(hours: 24));
-      debugPrint(_actualDia.toString());
-      notifyListeners();      
-    }else{
-      _actualDia=_actualDia.add(Duration(hours: -24));
-      debugPrint(_actualDia.toString());
-      notifyListeners(); 
+      _actualDia = _actualDia.add(Duration(hours: 24));
+      //debugPrint(_actualDia.toString());
+      notifyListeners();
+    } else {
+      _actualDia = _actualDia.add(Duration(hours: -24));
+      //debugPrint(_actualDia.toString());
+      notifyListeners();
     }
   }
 
@@ -83,13 +53,54 @@ class MainPageProvider with ChangeNotifier {
   }
 }
 
+class ServeiProvider with ChangeNotifier {
+  TaulesList _taules;
+  int _actualTorn;
+  int _actualServei;
+  DateTime _actualDia = DateTime.now();
+
+  ServeiProvider(this._actualServei);
+
+  void update(DiaProvider diaProvider) {
+    // Do some custom work based on myModel that may call `notifyListeners`
+    _actualDia = diaProvider._actualDia;
+    notifyListeners();
+    _setTaulesList();
+  }
+
+  TaulesList get taules => _taules;
+  int get torn => _actualTorn;
+  int get servei => _actualServei;
+
+  _setTaulesList() {
+    TaulesList.getLlistaTaules(
+            _actualDia, _actualServei, 1, taulesFisiquesProva)
+        .then((llistataules) {
+      _taules = llistataules;
+      _actualTorn = 1;
+
+      notifyListeners();
+    });
+  }
+
+  _changeTaulesList(int torn) {
+    TaulesList.getLlistaTaules(
+            _actualDia, _actualServei, torn, taulesFisiquesProva)
+        .then((llistataules) {
+      _taules = llistataules;
+      _actualTorn = torn;
+    });
+    notifyListeners();
+  }
+}
+
 class MainPage extends StatelessWidget {
-  //final MainPageProvider _taules = Provider.of(context);
+  //final ServeiProvider _taules = Provider.of(context);
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<MainPageProvider>(
-      create: (_) => MainPageProvider(),
+    return ChangeNotifierProvider<DiaProvider>(
+      create: (context) => DiaProvider(DateTime.now()),
       child: Scaffold(
         backgroundColor: bgColor,
         appBar: AppBar(
@@ -119,12 +130,16 @@ class MainPage extends StatelessWidget {
               IconButton(
                 color: Colors.white,
                 icon: Icon(Icons.menu),
-                onPressed: () {},
+                onPressed: () {
+                   
+                },
               ),
               IconButton(
                 color: Colors.white,
                 icon: Icon(Icons.calendar_today),
-                onPressed: () {},
+                onPressed: () {
+                  
+                },
               ),
             ],
           ),
@@ -148,16 +163,14 @@ class MainPageAppBarTitle extends StatelessWidget {
       children: <Widget>[
         InkWell(
           onTap: () {
-            Provider.of<MainPageProvider>(context, listen: false)._changeDay(false);
-            Provider.of<MainPageProvider>(context,listen: false)._setTaulesList(1);
+            Provider.of<DiaProvider>(context, listen: false)._changeDay(false);
           },
           child: Icon(Icons.arrow_back),
         ),
-        Text(Provider.of<MainPageProvider>(context, listen: true).getDia()),
+        Text(Provider.of<DiaProvider>(context, listen: true).getDia()),
         InkWell(
           onTap: () {
-            Provider.of<MainPageProvider>(context, listen: false)._changeDay(true);
-            Provider.of<MainPageProvider>(context,listen: false)._setTaulesList(1);
+            Provider.of<DiaProvider>(context, listen: false)._changeDay(true);
           },
           child: Icon(Icons.arrow_forward),
         ),
@@ -169,8 +182,10 @@ class MainPageAppBarTitle extends StatelessWidget {
 class DinarTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<MainPageProvider>(
-        create: (_) => MainPageProvider(),
+    return ChangeNotifierProxyProvider<DiaProvider, ServeiProvider>(
+        create: (_) => ServeiProvider(1),
+        update: (_, diaProvider, serveiProvider) =>
+            serveiProvider..update(diaProvider),
         child: TaulesGrid(
           servei: 1,
         ));
@@ -180,10 +195,12 @@ class DinarTab extends StatelessWidget {
 class SoparTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<MainPageProvider>(
-        create: (_) => MainPageProvider(),
+    return ChangeNotifierProxyProvider<DiaProvider, ServeiProvider>(
+        create: (_) => ServeiProvider(2),
+        update: (_, diaProvider, serveiProvider) =>
+            serveiProvider..update(diaProvider),
         child: TaulesGrid(
-          servei: 2,
+          servei: 1,
         ));
   }
 }
@@ -199,7 +216,7 @@ class TaulesGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color getColor(int boto) {
-      int tornActual = Provider.of<MainPageProvider>(context).torn;
+      int tornActual = Provider.of<ServeiProvider>(context).torn;
       if (tornActual == boto) {
         return actionColor;
       } else {
@@ -207,12 +224,12 @@ class TaulesGrid extends StatelessWidget {
       }
     }
 
-    //Provider.of<MainPageProvider>(context)._setTaulesList();
-    if (Provider.of<MainPageProvider>(context).taules == null) {
-      Provider.of<MainPageProvider>(context)._setTaulesList(this.servei);
+    //Provider.of<ServeiProvider>(context)._setTaulesList();
+    if (Provider.of<ServeiProvider>(context).taules == null) {
+      Provider.of<ServeiProvider>(context)._setTaulesList();
       return Center(child: CircularProgressIndicator());
     } else {
-      final TaulesList _taules = Provider.of<MainPageProvider>(context).taules;
+      final TaulesList _taules = Provider.of<ServeiProvider>(context).taules;
       return CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
@@ -235,7 +252,7 @@ class TaulesGrid extends StatelessWidget {
                     SizedBox(
                       height: 40,
                       width: 100,
-                      child: Consumer<MainPageProvider>(
+                      child: Consumer<ServeiProvider>(
                         builder: (context, provider, _) => RaisedButton(
                           color: getColor(1),
                           child: Text(
@@ -243,14 +260,8 @@ class TaulesGrid extends StatelessWidget {
                             style: TextStyle(fontSize: 16),
                           ),
                           onPressed: () {
-                            Provider.of<MainPageProvider>(context,
-                                    listen: false)
-                                ._changeTaulesList(
-                                    Provider.of<MainPageProvider>(context,
-                                            listen: false)
-                                        ._actualDia,
-                                    this.servei,
-                                    1);
+                            Provider.of<ServeiProvider>(context, listen: false)
+                                ._changeTaulesList(1);
                           },
                         ),
                       ),
@@ -258,7 +269,7 @@ class TaulesGrid extends StatelessWidget {
                     SizedBox(
                       height: 40,
                       width: 100,
-                      child: Consumer<MainPageProvider>(
+                      child: Consumer<ServeiProvider>(
                         builder: (context, provider, _) => RaisedButton(
                           color: getColor(2),
                           child: Text(
@@ -266,14 +277,8 @@ class TaulesGrid extends StatelessWidget {
                             style: TextStyle(fontSize: 16),
                           ),
                           onPressed: () {
-                            Provider.of<MainPageProvider>(context,
-                                    listen: false)
-                                ._changeTaulesList(
-                                    Provider.of<MainPageProvider>(context,
-                                            listen: false)
-                                        ._actualDia,
-                                    this.servei,
-                                    2);
+                            Provider.of<ServeiProvider>(context, listen: false)
+                                ._changeTaulesList(2);
                           },
                         ),
                       ),

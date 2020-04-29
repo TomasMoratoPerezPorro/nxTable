@@ -1,6 +1,9 @@
 import 'package:prototip_tfg/Models/Reserva.dart';
 import 'package:prototip_tfg/Models/Restaurant.dart';
 
+final avui = DateTime.now();
+final dema = avui.add(Duration(hours: 24));
+
 final Reserva reserva1 = Reserva(0001, 1, 1, 'Morató', '608492147', 1,
     'Clients VIP', Hora(21, 30), DateTime.now(), 2);
 final Reserva reserva2 = Reserva(0002, 1, 1, 'Garcia', '605367557', 3,
@@ -25,6 +28,14 @@ final Reserva reserva11 = Reserva(
     0008, 2, 1, 'Platja', '650598080', 3, '', Hora(21, 30), DateTime.now(), 3);
 final Reserva reserva12 = Reserva(
     0008, 2, 2, 'Miró', '650598080', 3, '', Hora(21, 30), DateTime.now(), 3);
+final Reserva reserva13 =
+    Reserva(0008, 2, 2, 'Uruguayo', '650598080', 3, '', Hora(21, 30), dema, 3);
+final Reserva reserva14 = Reserva(
+    0008, 2, 1, 'Monte Pinar', '650598080', 3, '', Hora(21, 30), dema, 3);
+final Reserva reserva15 =
+    Reserva(0008, 2, 1, 'Chile', '650598080', 3, '', Hora(21, 30), dema, 3);
+final Reserva reserva16 =
+    Reserva(0008, 2, 2, 'Guateke', '650598080', 3, '', Hora(21, 30), dema, 3);
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -49,6 +60,10 @@ List<Reserva> getReservasDia(DateTime dia, int servei, int torn) {
     reserva10,
     reserva11,
     reserva12,
+    reserva13,
+    reserva14,
+    reserva15,
+    reserva16,
   ];
 
   List<Reserva> returnReserves = [];
