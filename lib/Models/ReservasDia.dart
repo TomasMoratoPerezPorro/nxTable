@@ -1,10 +1,12 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:prototip_tfg/Models/Reserva.dart';
-import 'package:prototip_tfg/Models/Restaurant.dart';
 
 final avui = DateTime.now();
 final dema = avui.add(Duration(hours: 24));
 
-final Reserva reserva1 = Reserva(0001, 1, 1, 'Morató', '608492147', 1,
+/* final Reserva reserva1 = Reserva(0001, 1, 1, 'Morató', '608492147', 1,
     'Clients VIP', Hora(21, 30), DateTime.now(), 2);
 final Reserva reserva2 = Reserva(0002, 1, 1, 'Garcia', '605367557', 3,
     'Alergico al Aguacate', Hora(21, 30), DateTime.now(), 1);
@@ -35,46 +37,39 @@ final Reserva reserva14 = Reserva(
 final Reserva reserva15 =
     Reserva(0008, 2, 1, 'Chile', '650598080', 3, '', Hora(21, 30), dema, 3);
 final Reserva reserva16 =
-    Reserva(0008, 2, 2, 'Guateke', '650598080', 3, '', Hora(21, 30), dema, 3);
+    Reserva(0008, 2, 2, 'Guateke', '650598080', 3, '', Hora(21, 30), dema, 3); */
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 class ReservasDia {
-  List<Reserva> reservas;
+  final List<Reserva> reservas;
   DateTime data;
+  ReservasDia({this.reservas, this.data});
 
-  ReservasDia(this.reservas, this.data);
-}
-
-List<Reserva> getReservasDia(DateTime dia, int servei, int torn) {
-  List<Reserva> llistaProva = [
-    reserva1,
-    reserva2,
-    reserva3,
-    reserva4,
-    reserva5,
-    reserva6,
-    reserva7,
-    reserva8,
-    reserva9,
-    reserva10,
-    reserva11,
-    reserva12,
-    reserva13,
-    reserva14,
-    reserva15,
-    reserva16,
-  ];
-
-  List<Reserva> returnReserves = [];
-
-  for (var reserva in llistaProva) {
-    if (reserva.dia.day == dia.day) {
-      if (reserva.servei == servei && reserva.torn == torn) {
-        returnReserves.add(reserva);
-      }
-    }
+  factory ReservasDia.fromJson(List<dynamic> parsedJson,DateTime data) {
+    List<Reserva> reservas = new List<Reserva>();
+    reservas = parsedJson.map((i) => Reserva.fromJson(i)).toList();
+    return new ReservasDia(
+      reservas: reservas,
+      data: data,
+    );
   }
 
-  return returnReserves;
+  
+
+  
+
+  List<Reserva> getReservasDia(DateTime dia, int servei, int torn) {
+    List<Reserva> returnReserves = [];
+
+    for (var reserva in this.reservas) {
+      if (reserva.dia.day == dia.day) {
+        if (reserva.servei == servei && reserva.torn == torn) {
+          returnReserves.add(reserva);
+        }
+      }
+    }
+
+    return returnReserves;
+  }
 }

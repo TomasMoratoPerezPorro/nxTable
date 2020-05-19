@@ -13,11 +13,29 @@ class Reserva {
   int taula;
   String comentaris;
   DateTime dia;
-  Hora horaEntrada;
+  String horaEntrada;
   int estat;
 
-  Reserva(this.id, this.servei, this.torn, this.nom, this.telefon, this.taula,
-      this.comentaris, this.horaEntrada, this.dia, this.estat);
+  Reserva({this.id, this.servei, this.torn, this.nom, this.telefon, this.taula,
+      this.comentaris, this.horaEntrada, this.dia, this.estat});
+
+  factory Reserva.fromJson(Map<String, dynamic> json) {
+    return Reserva(
+      id: json['id_reserva'] as int,
+      servei: json['id_servei'] as int,
+      torn: json['id_torn'] as int,
+      nom: json['nom'] as String,
+      telefon: json['telefon'] as String,
+      taula: json['id_taula'] as int,
+      comentaris: json['comentaris'] as String,
+      dia: DateTime.parse(json['data']) as DateTime,
+      horaEntrada: json['hora_entrada'] as String,
+      estat: json['estat'] as int
+    );
+  }
+
+
+
 
   String getDia() {
     var dt = this.dia;

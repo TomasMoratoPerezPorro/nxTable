@@ -13,6 +13,7 @@ class Taula {
 
 class TaulesList {
   List<Taula> taulesInfoList = [];
+
   TaulesList(this.taulesInfoList);
   TaulesList.empty() {
     taulesInfoList = [];
@@ -22,8 +23,8 @@ class TaulesList {
   List<Taula> getTaules() => taulesInfoList;
 
   static Future<TaulesList> getLlistaTaules(DateTime dia, int servei, int torn,
-      List<TaulaFisica> taulesFisiques) async {
-    var reservesDelDia = getReservasDia(dia, servei, torn);
+      List<TaulaFisica> taulesFisiques, List<Reserva> reservas) async {
+    var reservesDelDia = reservas;
     List<Taula> returnListTaules = [];
     Taula taulaf;
 
@@ -33,11 +34,15 @@ class TaulesList {
       for (var reserva in reservesDelDia) {
         //print(reserva.nom);
         if (reserva.taula == taulafisica.id) {
-          taulaf =
-              Taula(taulafisica.id, taulafisica.maxPersonas, true, reserva);
-          //print('Taula: ${taulaf.id} - Reserva: ${taulaf.reserva}');
-          returnListTaules.add(taulaf);
-          isfree = false;
+          if (reserva.servei == servei) {
+            if (reserva.torn == torn) {
+              taulaf =
+                  Taula(taulafisica.id, taulafisica.maxPersonas, true, reserva);
+              //print('Taula: ${taulaf.id} - Reserva: ${taulaf.reserva}');
+              returnListTaules.add(taulaf);
+              isfree = false;
+            }
+          }
         }
       }
       if (isfree) {

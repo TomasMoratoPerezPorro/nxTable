@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:prototip_tfg/Models/Reserva.dart';
 import 'package:prototip_tfg/Models/Restaurant.dart';
 import 'package:prototip_tfg/Models/Taula.dart';
+import 'package:prototip_tfg/controllers/CustomApi.dart';
 import 'package:prototip_tfg/pages/DetailReservaPage.dart';
 import 'package:provider/provider.dart';
 
@@ -31,16 +33,48 @@ final List<TaulaFisica> taulesFisiquesProva = [
 
 class DiaProvider with ChangeNotifier {
   DateTime _actualDia;
-  DiaProvider(this._actualDia);
+  DiaProvider(actualDia) {
+    this._actualDia = actualDia;
+    _getReservasDia();
+  }
+  bool _isLoading = false;
+  dynamic _reservasDia;
+  CustomApi api = CustomApi();
 
-  _changeDay(bool direction) {
+  Future<void> _getReservasDia() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      var stats = await api.getReservasDia(_actualDia);
+      _reservasDia = stats;
+      debugPrint(stats.toString());
+      await new Future.delayed(const Duration(seconds : 1));
+      _isLoading = false;
+      debugPrint(_isLoading.toString());
+      notifyListeners();
+    } catch (ex) {
+      _reservasDia = null;
+      _isLoading = false;
+      notifyListeners();
+      debugPrint(ex.toString());
+      debugPrint("catch EXCEPTION _reservasDia = null");
+    } finally {
+      _isLoading = false;
+      debugPrint("FINALLY");
+      notifyListeners();
+    }
+  }
+
+  void _changeDay(bool direction) async {
     if (direction) {
       _actualDia = _actualDia.add(Duration(hours: 24));
       //debugPrint(_actualDia.toString());
+      await _getReservasDia();
       notifyListeners();
     } else {
       _actualDia = _actualDia.add(Duration(hours: -24));
       //debugPrint(_actualDia.toString());
+      await _getReservasDia();
       notifyListeners();
     }
   }
@@ -58,102 +92,140 @@ class ServeiProvider with ChangeNotifier {
   int _actualTorn;
   int _actualServei;
   DateTime _actualDia = DateTime.now();
+  List<Reserva> _reservas = [];
 
-  ServeiProvider(this._actualServei);
+  ServeiProvider(this._actualServei,this._actualTorn);
 
-  void update(DiaProvider diaProvider) {
+  void update(DiaProvider diaProvider) async {
     // Do some custom work based on myModel that may call `notifyListeners`
     _actualDia = diaProvider._actualDia;
-    notifyListeners();
-    _setTaulesList();
+
+    if (diaProvider._reservasDia.reservas != null) {
+      _reservas = diaProvider._reservasDia.reservas;
+      await _setTaulesList();
+      notifyListeners();
+    }
   }
 
   TaulesList get taules => _taules;
-  int get torn => _actualTorn;
+  int get torn{
+    if(_actualServei==1){
+      return _actualTorn;
+    }else{
+      return _actualTorn-1;
+    }
+    
+  } 
   int get servei => _actualServei;
 
-  _setTaulesList() {
-    TaulesList.getLlistaTaules(
-            _actualDia, _actualServei, 1, taulesFisiquesProva)
-        .then((llistataules) {
+  _setTaulesList() async {
+    if (_actualServei == 1) {
+      var llistataules = await TaulesList.getLlistaTaules(
+          _actualDia, _actualServei, _actualTorn, taulesFisiquesProva, _reservas);
       _taules = llistataules;
-      _actualTorn = 1;
+      //_actualTorn = 1;
 
       notifyListeners();
-    });
+    } else if (_actualServei == 2) {
+      var llistataules = await TaulesList.getLlistaTaules(
+          _actualDia, _actualServei, _actualTorn, taulesFisiquesProva, _reservas);
+      _taules = llistataules;
+      //_actualTorn = 1;
+
+      notifyListeners();
+    }
   }
 
-  _changeTaulesList(int torn) {
-    TaulesList.getLlistaTaules(
-            _actualDia, _actualServei, torn, taulesFisiquesProva)
-        .then((llistataules) {
+  _changeTaulesList(int torn) async {
+    if (_actualServei == 2) {
+      var llistataules = await TaulesList.getLlistaTaules(
+          _actualDia, _actualServei, torn + 1, taulesFisiquesProva, _reservas);
+      _taules = llistataules;
+      _actualTorn = torn+1;
+
+      notifyListeners();
+    } else {
+      var llistataules = await TaulesList.getLlistaTaules(
+          _actualDia, _actualServei, torn, taulesFisiquesProva, _reservas);
       _taules = llistataules;
       _actualTorn = torn;
-    });
-    notifyListeners();
+
+      notifyListeners();
+    }
   }
 }
 
 class MainPage extends StatelessWidget {
-  //final ServeiProvider _taules = Provider.of(context);
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<DiaProvider>(
-      create: (context) => DiaProvider(DateTime.now()),
-      child: Scaffold(
-        backgroundColor: bgColor,
-        appBar: AppBar(
-          title: MainPageAppBarTitle(),
-          backgroundColor: mainColor,
-          bottom: TabBar(
-            indicatorColor: actionColor,
-            labelPadding: EdgeInsets.all(10),
-            tabs: [Text("COMIDA"), Text("CENA")],
-          ),
+    return Scaffold(
+      backgroundColor: bgColor,
+      appBar: AppBar(
+        title: MainPageAppBarTitle(),
+        backgroundColor: mainColor,
+        bottom: TabBar(
+          indicatorColor: actionColor,
+          labelPadding: EdgeInsets.all(10),
+          tabs: [Text("COMIDA"), Text("CENA")],
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton(
-          foregroundColor: Colors.black,
-          backgroundColor: actionColor,
-          child: const Icon(Icons.add),
-          onPressed: () {},
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        foregroundColor: Colors.black,
+        backgroundColor: actionColor,
+        child: const Icon(Icons.add),
+        onPressed: () {},
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: mainColor,
+        shape: CircularNotchedRectangle(),
+        notchMargin: 4.0,
+        child: new Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            IconButton(
+              color: Colors.white,
+              icon: Icon(Icons.menu),
+              onPressed: () {},
+            ),
+            IconButton(
+              color: Colors.white,
+              icon: Icon(Icons.calendar_today),
+              onPressed: () {},
+            ),
+          ],
         ),
-        bottomNavigationBar: BottomAppBar(
-          color: mainColor,
-          shape: CircularNotchedRectangle(),
-          notchMargin: 4.0,
-          child: new Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(
-                color: Colors.white,
-                icon: Icon(Icons.menu),
-                onPressed: () {
-                   
-                },
-              ),
-              IconButton(
-                color: Colors.white,
-                icon: Icon(Icons.calendar_today),
-                onPressed: () {
-                  
-                },
-              ),
-            ],
-          ),
-        ),
-        body: TabBarView(
+      ),
+      body: SafeArea(
+        child: BodyTabBarView(),
+      ),
+    );
+  }
+}
+
+class BodyTabBarView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return TabBarView(
+      children: <Widget>[
+        DinarTab(),
+        SoparTab(),
+      ],
+    );
+  }
+}
+
+/* Provider.of<DiaProvider>(context, listen: false)._isLoading
+        ? CircularProgressIndicator()
+        : TabBarView(
           children: <Widget>[
             DinarTab(),
             SoparTab(),
           ],
         ),
-      ),
-    );
-  }
-}
+ */
 
 class MainPageAppBarTitle extends StatelessWidget {
   @override
@@ -182,26 +254,34 @@ class MainPageAppBarTitle extends StatelessWidget {
 class DinarTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProxyProvider<DiaProvider, ServeiProvider>(
-        create: (_) => ServeiProvider(1),
-        update: (_, diaProvider, serveiProvider) =>
-            serveiProvider..update(diaProvider),
-        child: TaulesGrid(
-          servei: 1,
-        ));
+    if (Provider.of<DiaProvider>(context, listen: true)._isLoading) {
+      return Center(child: CircularProgressIndicator(strokeWidth: 4,));
+    } else {
+      return ChangeNotifierProxyProvider<DiaProvider, ServeiProvider>(
+          create: (_) => ServeiProvider(1,1),
+          update: (_, diaProvider, serveiProvider) =>
+              serveiProvider..update(diaProvider),
+          child: TaulesGrid(
+            servei: 1,
+          ));
+    }
   }
 }
 
 class SoparTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProxyProvider<DiaProvider, ServeiProvider>(
-        create: (_) => ServeiProvider(2),
-        update: (_, diaProvider, serveiProvider) =>
-            serveiProvider..update(diaProvider),
-        child: TaulesGrid(
-          servei: 1,
-        ));
+    if (Provider.of<DiaProvider>(context, listen: true)._isLoading) {
+      return Center(child: CircularProgressIndicator(strokeWidth: 4,));
+    } else {
+      return ChangeNotifierProxyProvider<DiaProvider, ServeiProvider>(
+          create: (_) => ServeiProvider(2,2),
+          update: (_, diaProvider, serveiProvider) =>
+              serveiProvider..update(diaProvider),
+          child: TaulesGrid(
+            servei: 2,
+          ));
+    }
   }
 }
 
