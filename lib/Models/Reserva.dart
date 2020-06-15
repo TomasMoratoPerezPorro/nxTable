@@ -15,9 +15,10 @@ class Reserva {
   DateTime dia;
   String horaEntrada;
   int estat;
+  int numComensals;
 
   Reserva({this.id, this.servei, this.torn, this.nom, this.telefon, this.taula,
-      this.comentaris, this.horaEntrada, this.dia, this.estat});
+      this.comentaris, this.horaEntrada, this.dia, this.estat, this.numComensals});
 
   factory Reserva.fromJson(Map<String, dynamic> json) {
     return Reserva(
@@ -30,7 +31,8 @@ class Reserva {
       comentaris: json['comentaris'] as String,
       dia: DateTime.parse(json['data']) as DateTime,
       horaEntrada: json['hora_entrada'] as String,
-      estat: json['estat'] as int
+      estat: json['estat'] as int,
+      numComensals: json['num_comensals'] as int,
     );
   }
 
