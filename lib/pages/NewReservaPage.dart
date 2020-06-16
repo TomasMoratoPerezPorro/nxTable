@@ -27,7 +27,7 @@ class NewReservaProvider with ChangeNotifier {
 
   void _setDia(DateTime dia) {
     this._actualDia = dia;
-    
+
     notifyListeners();
   }
 
@@ -49,7 +49,52 @@ class NewReservaProvider with ChangeNotifier {
   }
 }
 
-class NewReservasPage extends StatelessWidget {
+class NewReservasPage extends StatefulWidget {
+  @override
+  _NewReservasPageState createState() => _NewReservasPageState();
+}
+
+class _NewReservasPageState extends State<NewReservasPage> {
+  int bottomSelectedIndex = 0;
+
+  PageController pageController = PageController(
+    initialPage: 0,
+    keepPage: true,
+  );
+
+  Widget buildPageView() {
+    return PageView(
+      controller: pageController,
+      onPageChanged: (index) {
+        pageChanged(index);
+      },
+      children: <Widget>[
+        NewReservaFirstStep(),
+        NewReservaFirstStep(),
+        NewReservaFirstStep(),
+      ],
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void pageChanged(int index) {
+    setState(() {
+      bottomSelectedIndex = index;
+    });
+  }
+
+  void bottomTapped(int index) {
+    setState(() {
+      bottomSelectedIndex = index;
+      pageController.animateToPage(index,
+          duration: Duration(milliseconds: 500), curve: Curves.ease);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,15 +103,65 @@ class NewReservasPage extends StatelessWidget {
         title: Text('New Reserva'),
         backgroundColor: mainColor,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            TopInfoBar(),
-            ComensalesCard(),
-            ServicioCard(),
-            CalendarCard(),
-          ],
-        ),
+      bottomNavigationBar: BottomAppBar(
+          color: mainColor,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                bottomSelectedIndex == 0
+                    ? SizedBox(
+                        height: 35,
+                      )
+                    : InkWell(
+                        onTap: () {
+                          if (bottomSelectedIndex > 0) {
+                            bottomTapped(bottomSelectedIndex - 1);
+                          }
+                        },
+                        child: Icon(Icons.arrow_back,
+                            size: 25, color: Colors.white),
+                      ),
+                SizedBox(
+                  height: 35,
+                ),
+                bottomSelectedIndex == 2
+                    ? SizedBox(
+                        height: 35,
+                      )
+                    : InkWell(
+                        onTap: () {
+                          if (bottomSelectedIndex < 2) {
+                            bottomTapped(bottomSelectedIndex + 1);
+                          }
+                        },
+                        child: Icon(Icons.arrow_forward,
+                            size: 25, color: Colors.white),
+                      ),
+              ],
+            ),
+          )),
+      body: buildPageView(),
+    );
+  }
+}
+
+class NewReservaFirstStep extends StatelessWidget {
+  const NewReservaFirstStep({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          TopInfoBar(),
+          ComensalesCard(),
+          ServicioCard(),
+          CalendarCard(),
+        ],
       ),
     );
   }
@@ -189,7 +284,6 @@ class _CalendarCardState extends State<CalendarCard> {
     ]);
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
