@@ -5,6 +5,7 @@ import 'package:prototip_tfg/Models/Restaurant.dart';
 import 'package:prototip_tfg/Models/Taula.dart';
 import 'package:prototip_tfg/controllers/CustomApi.dart';
 import 'package:prototip_tfg/pages/DetailReservaPage.dart';
+import 'package:prototip_tfg/pages/NewReservaPage.dart';
 import 'package:provider/provider.dart';
 
 final Color mainColor = const Color.fromARGB(255, 44, 64, 114);
@@ -48,7 +49,7 @@ class DiaProvider with ChangeNotifier {
       var stats = await api.getReservasDia(_actualDia);
       _reservasDia = stats;
       debugPrint(stats.toString());
-      await new Future.delayed(const Duration(seconds : 1));
+      await new Future.delayed(const Duration(seconds: 1));
       _isLoading = false;
       debugPrint(_isLoading.toString());
       notifyListeners();
@@ -94,7 +95,7 @@ class ServeiProvider with ChangeNotifier {
   DateTime _actualDia = DateTime.now();
   List<Reserva> _reservas = [];
 
-  ServeiProvider(this._actualServei,this._actualTorn);
+  ServeiProvider(this._actualServei, this._actualTorn);
 
   void update(DiaProvider diaProvider) async {
     // Do some custom work based on myModel that may call `notifyListeners`
@@ -108,27 +109,27 @@ class ServeiProvider with ChangeNotifier {
   }
 
   TaulesList get taules => _taules;
-  int get torn{
-    if(_actualServei==1){
+  int get torn {
+    if (_actualServei == 1) {
       return _actualTorn;
-    }else{
-      return _actualTorn-1;
+    } else {
+      return _actualTorn - 1;
     }
-    
-  } 
+  }
+
   int get servei => _actualServei;
 
   _setTaulesList() async {
     if (_actualServei == 1) {
-      var llistataules = await TaulesList.getLlistaTaules(
-          _actualDia, _actualServei, _actualTorn, taulesFisiquesProva, _reservas);
+      var llistataules = await TaulesList.getLlistaTaules(_actualDia,
+          _actualServei, _actualTorn, taulesFisiquesProva, _reservas);
       _taules = llistataules;
       //_actualTorn = 1;
 
       notifyListeners();
     } else if (_actualServei == 2) {
-      var llistataules = await TaulesList.getLlistaTaules(
-          _actualDia, _actualServei, _actualTorn, taulesFisiquesProva, _reservas);
+      var llistataules = await TaulesList.getLlistaTaules(_actualDia,
+          _actualServei, _actualTorn, taulesFisiquesProva, _reservas);
       _taules = llistataules;
       //_actualTorn = 1;
 
@@ -141,7 +142,7 @@ class ServeiProvider with ChangeNotifier {
       var llistataules = await TaulesList.getLlistaTaules(
           _actualDia, _actualServei, torn + 1, taulesFisiquesProva, _reservas);
       _taules = llistataules;
-      _actualTorn = torn+1;
+      _actualTorn = torn + 1;
 
       notifyListeners();
     } else {
@@ -156,7 +157,6 @@ class ServeiProvider with ChangeNotifier {
 }
 
 class MainPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,7 +175,15 @@ class MainPage extends StatelessWidget {
         foregroundColor: Colors.black,
         backgroundColor: actionColor,
         child: const Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) {
+                return NewReservasPage();
+              },
+            ),
+          );
+        },
       ),
       bottomNavigationBar: BottomAppBar(
         color: mainColor,
@@ -255,10 +263,13 @@ class DinarTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (Provider.of<DiaProvider>(context, listen: true)._isLoading) {
-      return Center(child: CircularProgressIndicator(strokeWidth: 4,));
+      return Center(
+          child: CircularProgressIndicator(
+        strokeWidth: 4,
+      ));
     } else {
       return ChangeNotifierProxyProvider<DiaProvider, ServeiProvider>(
-          create: (_) => ServeiProvider(1,1),
+          create: (_) => ServeiProvider(1, 1),
           update: (_, diaProvider, serveiProvider) =>
               serveiProvider..update(diaProvider),
           child: TaulesGrid(
@@ -272,10 +283,13 @@ class SoparTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (Provider.of<DiaProvider>(context, listen: true)._isLoading) {
-      return Center(child: CircularProgressIndicator(strokeWidth: 4,));
+      return Center(
+          child: CircularProgressIndicator(
+        strokeWidth: 4,
+      ));
     } else {
       return ChangeNotifierProxyProvider<DiaProvider, ServeiProvider>(
-          create: (_) => ServeiProvider(2,2),
+          create: (_) => ServeiProvider(2, 2),
           update: (_, diaProvider, serveiProvider) =>
               serveiProvider..update(diaProvider),
           child: TaulesGrid(

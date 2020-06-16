@@ -20,6 +20,7 @@ class DetailReservaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bgColor,
       appBar: AppBar(
         title: Center(
             child: Container(
@@ -327,139 +328,6 @@ class NumeroComensalesWidget extends StatelessWidget {
   }
 }
 
-class DetailsComentaris extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final reserva = Provider.of<Reserva>(context);
-    return Container(
-      color: Colors.blueAccent,
-      margin: EdgeInsets.only(bottom: 60),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            "Comentaris:  ",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Text("${reserva.comentaris}"),
-        ],
-      ),
-    );
-  }
-}
 
-class DetailsServeiTorn extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final reserva = Provider.of<Reserva>(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            Text(
-              "Servei:  ",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(reserva.serveiToString()),
-          ],
-        ),
-        Container(
-          margin: EdgeInsets.only(top: 7),
-          child: Row(
-            children: <Widget>[
-              Text(
-                "Torn:  ",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text(reserva.torn.toString()),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
 
-class DetailsIcons extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final reserva = Provider.of<Reserva>(context);
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Container(
-                    margin: EdgeInsets.only(right: 7),
-                    child: Icon(
-                      Icons.event,
-                      size: 20,
-                    )),
-                Text(reserva.getDia()),
-              ],
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 5),
-              child: Row(
-                children: <Widget>[
-                  Container(
-                      margin: EdgeInsets.only(right: 7),
-                      child: Icon(
-                        Icons.access_time,
-                        size: 20,
-                      )),
-                  Text(reserva.horaEntrada.toString()),
-                ],
-              ),
-            ),
-          ],
-        ),
-        Container(
-          margin: EdgeInsets.only(left: 30),
-          child: Row(
-            children: <Widget>[
-              Container(
-                  margin: EdgeInsets.only(right: 7),
-                  child: Icon(
-                    Icons.phone,
-                    size: 20,
-                  )),
-              Text(reserva.telefon.toString()),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
 
-class BarraEstatDetails extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final reserva = Provider.of<Reserva>(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Expanded(
-            flex: 1,
-            child: Container(
-              width: 20,
-              decoration: BoxDecoration(
-                color: reserva.getColorEstat(),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.zero,
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.zero,
-                ),
-              ),
-            ))
-      ],
-    );
-  }
-}

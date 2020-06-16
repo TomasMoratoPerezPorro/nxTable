@@ -12,6 +12,7 @@ dependencies:
   provider: ^4.0.5
   intl: ^0.16.1
   http: ^0.12.1
+  flutter_calendar_carousel: ^1.4.12
 
   cupertino_icons: ^0.1.2
 
