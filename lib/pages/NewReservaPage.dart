@@ -6,10 +6,48 @@ import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
+import 'package:provider/provider.dart';
+
 final Color mainColor = const Color.fromARGB(255, 44, 64, 114);
 final Color bgColor = const Color.fromARGB(255, 248, 246, 242);
 final Color actionColor = const Color.fromARGB(255, 255, 210, 57);
 final Color disabledColor = const Color.fromARGB(50, 153, 153, 153);
+
+class NewReservaProvider with ChangeNotifier {
+  DateTime _actualDia = DateTime.now();
+  int _numComensales;
+  int _idServicio = 0;
+  String _nom;
+  String _telefon;
+  int _idTorn;
+  int _estat;
+  int _idTaula;
+
+  int get servei => _idServicio;
+
+  void _setDia(DateTime dia) {
+    this._actualDia = dia;
+    
+    notifyListeners();
+  }
+
+  void _setServei(int idServei) {
+    this._idServicio = idServei;
+    notifyListeners();
+  }
+
+  String getDia() {
+    var dt = _actualDia;
+    var newFormat = DateFormat("EEEE, dd MMMM");
+    String updatedDt = newFormat.format(dt);
+    return updatedDt;
+  }
+
+  void _setNumComensales(int i) {
+    this._numComensales = i;
+    notifyListeners();
+  }
+}
 
 class NewReservasPage extends StatelessWidget {
   @override
@@ -56,7 +94,7 @@ class _CalendarCardState extends State<CalendarCard> {
   DateTime _currentDate = DateTime.now();
   DateTime _currentDate2 = DateTime.now();
   String _currentMonth = DateFormat.yMMM().format(DateTime.now());
-//  List<DateTime> _markedDate = [DateTime(2018, 9, 20), DateTime(2018, 10, 11)];
+  //  List<DateTime> _markedDate = [DateTime(2018, 9, 20), DateTime(2018, 10, 11)];
   static Widget _eventIcon = new Container(
     decoration: new BoxDecoration(
         color: Colors.white,
@@ -152,27 +190,32 @@ class _CalendarCardState extends State<CalendarCard> {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
+    final newReservaProvider =
+        Provider.of<NewReservaProvider>(context, listen: false);
+
     /// Example with custom icon
     _calendarCarousel = CalendarCarousel<Event>(
       onDayPressed: (DateTime date, List<Event> events) {
         this.setState(() => _currentDate2 = date);
         events.forEach((event) => print(event.title));
+        newReservaProvider._setDia(_currentDate2);
       },
       weekendTextStyle: TextStyle(
         color: Colors.grey,
       ),
       thisMonthDayBorderColor: Colors.grey,
-//          weekDays: null, /// for pass null when you do not want to render weekDays
+      //          weekDays: null, /// for pass null when you do not want to render weekDays
       headerText: _currentMonth,
-//          markedDates: _markedDate,
+      //          markedDates: _markedDate,
       weekFormat: false,
       markedDatesMap: _markedDateMap,
       height: 400,
       selectedDateTime: _currentDate2,
       showIconBehindDayText: true,
-//          daysHaveCircularBorder: false, /// null for not rendering any border, true for circular border, false for rectangular border
+      //          daysHaveCircularBorder: false, /// null for not rendering any border, true for circular border, false for rectangular border
       customGridViewPhysics: NeverScrollableScrollPhysics(),
       markedDateShowIcon: true,
       markedDateIconMaxShown: 2,
@@ -198,8 +241,8 @@ class _CalendarCardState extends State<CalendarCard> {
 
       markedDateMoreShowTotal:
           false, // null for not showing hidden events indicator
-//          markedDateIconMargin: 9,
-//          markedDateIconOffset: 3,
+      //          markedDateIconMargin: 9,
+      //          markedDateIconOffset: 3,
     );
 
     return Padding(
@@ -230,7 +273,8 @@ class _CalendarCardState extends State<CalendarCard> {
                 ),
                 child: Center(
                   child: Text(
-                    "Martes 15 de Abril",
+                    Provider.of<NewReservaProvider>(context, listen: true)
+                        .getDia(),
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -253,6 +297,15 @@ class ServicioCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color getColor(int boto) {
+      int serveiActual = Provider.of<NewReservaProvider>(context).servei;
+      if (serveiActual == boto) {
+        return actionColor;
+      } else {
+        return Colors.grey[350];
+      }
+    }
+
     return Padding(
       padding: const EdgeInsets.all(8),
       child: SizedBox(
@@ -274,24 +327,36 @@ class ServicioCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    RaisedButton(
-                      color: disabledColor,
-                      child: Text(
-                        "Comida",
-                        style: TextStyle(fontSize: 16),
+                    Consumer<NewReservaProvider>(
+                      builder: (context, provider, _) => RaisedButton(
+                        color: getColor(1),
+                        child: Text(
+                          "Comida",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        onPressed: () {
+                          Provider.of<NewReservaProvider>(context,
+                                  listen: false)
+                              ._setServei(1);
+                        },
                       ),
-                      onPressed: () {},
                     ),
                     SizedBox(
                       width: 13,
                     ),
-                    RaisedButton(
-                      color: disabledColor,
-                      child: Text(
-                        "Cena",
-                        style: TextStyle(fontSize: 16),
+                    Consumer<NewReservaProvider>(
+                      builder: (context, provider, _) => RaisedButton(
+                        color: getColor(2),
+                        child: Text(
+                          "Comida",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        onPressed: () {
+                          Provider.of<NewReservaProvider>(context,
+                                  listen: false)
+                              ._setServei(2);
+                        },
                       ),
-                      onPressed: () {},
                     ),
                   ],
                 )
@@ -351,16 +416,29 @@ class ComensalesButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color getColor(int boto) {
+      int numComensalesActual =
+          Provider.of<NewReservaProvider>(context)._numComensales;
+      if (numComensalesActual == boto) {
+        return actionColor;
+      } else {
+        return Colors.grey[350];
+      }
+    }
+
     return ButtonTheme(
       minWidth: 10,
       height: 30,
       child: RaisedButton(
-        onPressed: () {},
+        onPressed: () {
+          Provider.of<NewReservaProvider>(context, listen: false)
+              ._setNumComensales(id);
+        },
         child: Text(
           id.toString(),
           style: TextStyle(fontSize: 12),
         ),
-        color: disabledColor,
+        color: getColor(id),
       ),
     );
   }

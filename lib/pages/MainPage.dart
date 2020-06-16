@@ -42,6 +42,8 @@ class DiaProvider with ChangeNotifier {
   dynamic _reservasDia;
   CustomApi api = CustomApi();
 
+  DateTime get actualDia => _actualDia;
+
   Future<void> _getReservasDia() async {
     _isLoading = true;
     notifyListeners();
