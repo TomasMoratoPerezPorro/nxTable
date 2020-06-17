@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:prototip_tfg/pages/NewReservaPage.dart';
 import 'package:prototip_tfg/pages/MainPage.dart';
+import 'package:prototip_tfg/providers/NewReservaProvider.dart';
 import 'package:provider/provider.dart';
 
 final Color mainColor = const Color.fromARGB(255, 44, 64, 114);
 final Color bgColor = const Color.fromARGB(255, 248, 246, 242);
 final Color actionColor = const Color.fromARGB(255, 255, 210, 57);
 final Color disabledColor = const Color.fromARGB(50, 153, 153, 153);
+
+
+
 
 class NewReservaSecondStep extends StatelessWidget {
   const NewReservaSecondStep({
@@ -15,16 +19,9 @@ class NewReservaSecondStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TopInfoBar(text: "Selecciona una mesa disponible:");
+    return SeleccioDeTaules();
   }
 
-  /* Column(
-        children: <Widget>[
-          TopInfoBar(text: "Selecciona una mesa disponible:"),
-          InfoPreviewCard(),
-          SeleccioDeTaules(),
-        ],
-      ); */
 }
 
 class SeleccioDeTaules extends StatelessWidget {
@@ -34,11 +31,15 @@ class SeleccioDeTaules extends StatelessWidget {
         create: (_) => ServeiProvider(1, 1),
         update: (_, diaProvider, serveiProvider) =>
             serveiProvider..update(diaProvider),
-        child: TaulesGrid(
+        child: TaulesGridAddReserva(
           servei: 1,
         ));
   }
 }
+
+
+
+
 
 class InfoPreviewCard extends StatelessWidget {
   const InfoPreviewCard({

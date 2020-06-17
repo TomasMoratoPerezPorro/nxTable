@@ -6,6 +6,7 @@ import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:prototip_tfg/pages/NewReservaSecondStep.dart';
+import 'package:prototip_tfg/providers/NewReservaProvider.dart';
 
 import 'package:provider/provider.dart';
 
@@ -14,62 +15,7 @@ final Color bgColor = const Color.fromARGB(255, 248, 246, 242);
 final Color actionColor = const Color.fromARGB(255, 255, 210, 57);
 final Color disabledColor = const Color.fromARGB(50, 153, 153, 153);
 
-class NewReservaProvider with ChangeNotifier {
-  DateTime _actualDia = DateTime.now();
-  int _numComensales;
-  int _idServicio;
-  String _nom;
-  String _telefon;
-  int _idTorn;
-  int _estat;
-  int _idTaula;
-  bool showMissingCamps = false;
 
-  int get servei => _idServicio;
-  int get numComensales => _numComensales;
-
-  void _setDia(DateTime dia) {
-    this._actualDia = dia;
-
-    notifyListeners();
-  }
-
-  void _setServei(int idServei) {
-    this._idServicio = idServei;
-    notifyListeners();
-  }
-
-  String getDia() {
-    var dt = _actualDia;
-    var newFormat = DateFormat("EEEE, dd MMMM");
-    String updatedDt = newFormat.format(dt);
-    return updatedDt;
-  }
-
-  void _setNumComensales(int i) {
-    this._numComensales = i;
-    notifyListeners();
-  }
-
-  bool canProceed(int index) {
-    if (index == 0) {
-      if (_numComensales != null && _idServicio != null && _actualDia != null) {
-        return true;
-      } else {
-        showMissingCamps = true;
-        notifyListeners();
-        return false;
-      }
-    }
-  }
-
-  void resetData(){
-    _actualDia = DateTime.now();
-    this._numComensales = null;
-    this._idServicio = null;
-    this.showMissingCamps = false;
-  }
-}
 
 class NewReservasPage extends StatefulWidget {
   @override
@@ -313,101 +259,107 @@ class _CalendarCardState extends State<CalendarCard> {
 
   @override
   Widget build(BuildContext context) {
-    final newReservaProvider =
-        Provider.of<NewReservaProvider>(context, listen: false);
+    
+    void setDia(DateTime currentDate2) {
+      Provider.of<NewReservaProvider>(context, listen: false).setDia(_currentDate2);
+    }
 
     /// Example with custom icon
     _calendarCarousel = CalendarCarousel<Event>(
       onDayPressed: (DateTime date, List<Event> events) {
         this.setState(() => _currentDate2 = date);
         events.forEach((event) => print(event.title));
-        newReservaProvider._setDia(_currentDate2);
-      },
-      weekendTextStyle: TextStyle(
-        color: Colors.grey,
-      ),
-      thisMonthDayBorderColor: Colors.grey,
-      //          weekDays: null, /// for pass null when you do not want to render weekDays
-      headerText: _currentMonth,
-      //          markedDates: _markedDate,
-      weekFormat: false,
-      markedDatesMap: _markedDateMap,
-      height: 400,
-      selectedDateTime: _currentDate2,
-      showIconBehindDayText: true,
-      //          daysHaveCircularBorder: false, /// null for not rendering any border, true for circular border, false for rectangular border
-      customGridViewPhysics: NeverScrollableScrollPhysics(),
-      markedDateShowIcon: true,
-      markedDateIconMaxShown: 2,
-      selectedDayTextStyle: TextStyle(
-        color: Colors.white,
-      ),
-      todayTextStyle: TextStyle(
-        color: Colors.blue,
-      ),
-      markedDateIconBuilder: (event) {
-        return event.icon;
-      },
-      minSelectedDate: _currentDate.subtract(Duration(days: 360)),
-      maxSelectedDate: _currentDate.add(Duration(days: 360)),
-      todayButtonColor: Colors.transparent,
-      todayBorderColor: Colors.green,
-      firstDayOfWeek: 1,
-      weekdayTextStyle: TextStyle(fontSize: 14.0, color: Colors.grey[300]),
-      selectedDayButtonColor: actionColor,
-      onCalendarChanged: (DateTime date) {
-        this.setState(() => _currentMonth = DateFormat.yMMM().format(date));
-      },
-
-      markedDateMoreShowTotal:
-          false, // null for not showing hidden events indicator
-      //          markedDateIconMargin: 9,
-      //          markedDateIconOffset: 3,
-    );
-
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: SizedBox(
-        width: double.infinity,
-        child: Card(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text(
-                  "Selecciona una fecha:",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+        setDia(_currentDate2);
+                /* newReservaProvider._setDia(_currentDate2); */
+        
+              },
+              weekendTextStyle: TextStyle(
+                color: Colors.grey,
               ),
-              SizedBox(height: 15),
-              Container(
-                height: 40,
+              thisMonthDayBorderColor: Colors.grey,
+              //          weekDays: null, /// for pass null when you do not want to render weekDays
+              headerText: _currentMonth,
+              //          markedDates: _markedDate,
+              weekFormat: false,
+              markedDatesMap: _markedDateMap,
+              height: 400,
+              selectedDateTime: _currentDate2,
+              showIconBehindDayText: true,
+              //          daysHaveCircularBorder: false, /// null for not rendering any border, true for circular border, false for rectangular border
+              customGridViewPhysics: NeverScrollableScrollPhysics(),
+              markedDateShowIcon: true,
+              markedDateIconMaxShown: 2,
+              selectedDayTextStyle: TextStyle(
+                color: Colors.white,
+              ),
+              todayTextStyle: TextStyle(
+                color: Colors.blue,
+              ),
+              markedDateIconBuilder: (event) {
+                return event.icon;
+              },
+              minSelectedDate: _currentDate.subtract(Duration(days: 360)),
+              maxSelectedDate: _currentDate.add(Duration(days: 360)),
+              todayButtonColor: Colors.transparent,
+              todayBorderColor: Colors.green,
+              firstDayOfWeek: 1,
+              weekdayTextStyle: TextStyle(fontSize: 14.0, color: Colors.grey[300]),
+              selectedDayButtonColor: actionColor,
+              onCalendarChanged: (DateTime date) {
+                this.setState(() => _currentMonth = DateFormat.yMMM().format(date));
+              },
+        
+              markedDateMoreShowTotal:
+                  false, // null for not showing hidden events indicator
+              //          markedDateIconMargin: 9,
+              //          markedDateIconOffset: 3,
+            );
+        
+            return Padding(
+              padding: const EdgeInsets.all(8),
+              child: SizedBox(
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  color: actionColor,
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                ),
-                child: Center(
-                  child: Text(
-                    Provider.of<NewReservaProvider>(context, listen: true)
-                        .getDia(),
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                child: Card(
+                  shape:
+                      RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          "Selecciona una fecha:",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Container(
+                        height: 40,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: actionColor,
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                        ),
+                        child: Center(
+                          child: Text(
+                            Provider.of<NewReservaProvider>(context, listen: true)
+                                .getDia(),
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: _calendarCarousel,
+                      )
+                    ],
                   ),
                 ),
               ),
-              Container(
-                child: _calendarCarousel,
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+            );
+          }
+        
+          
 }
 
 class ServicioCard extends StatelessWidget {
@@ -449,7 +401,7 @@ class ServicioCard extends StatelessWidget {
                     ),
                     SizedBox(width: 5),
                     newReservaProvider.showMissingCamps &&
-                            newReservaProvider._idServicio == null
+                            newReservaProvider.servei == null
                         ? Icon(Icons.announcement, color: Colors.red)
                         : SizedBox(width: 2),
                   ],
@@ -468,7 +420,7 @@ class ServicioCard extends StatelessWidget {
                         onPressed: () {
                           Provider.of<NewReservaProvider>(context,
                                   listen: false)
-                              ._setServei(1);
+                              .setServei(1);
                         },
                       ),
                     ),
@@ -485,7 +437,7 @@ class ServicioCard extends StatelessWidget {
                         onPressed: () {
                           Provider.of<NewReservaProvider>(context,
                                   listen: false)
-                              ._setServei(2);
+                              .setServei(2);
                         },
                       ),
                     ),
@@ -530,7 +482,7 @@ class ComensalesCard extends StatelessWidget {
                     ),
                     SizedBox(width: 5),
                     newReservaProvider.showMissingCamps &&
-                            newReservaProvider._numComensales == null
+                            newReservaProvider.numComensales == null
                         ? Icon(Icons.announcement, color: Colors.red)
                         : SizedBox(width: 2),
                   ],
@@ -560,7 +512,7 @@ class ComensalesButton extends StatelessWidget {
   Widget build(BuildContext context) {
     Color getColor(int boto) {
       int numComensalesActual =
-          Provider.of<NewReservaProvider>(context)._numComensales;
+          Provider.of<NewReservaProvider>(context).numComensales;
       if (numComensalesActual == boto) {
         return actionColor;
       } else {
@@ -574,7 +526,7 @@ class ComensalesButton extends StatelessWidget {
       child: RaisedButton(
         onPressed: () {
           Provider.of<NewReservaProvider>(context, listen: false)
-              ._setNumComensales(id);
+              .setNumComensales(id);
         },
         child: Text(
           id.toString(),
