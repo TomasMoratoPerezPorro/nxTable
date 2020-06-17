@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:prototip_tfg/Models/Taula.dart';
-import 'package:prototip_tfg/pages/NewReservaPage.dart';
-import 'package:prototip_tfg/pages/MainPage.dart';
 import 'package:prototip_tfg/providers/DiaProvider.dart';
 import 'package:prototip_tfg/providers/NewReservaProvider.dart';
 import 'package:prototip_tfg/providers/ServeiProvider.dart';
+import 'package:prototip_tfg/widgets/mainPageWidgets/TaulaStack.dart';
 import 'package:provider/provider.dart';
 
-final Color mainColor = const Color.fromARGB(255, 44, 64, 114);
-final Color bgColor = const Color.fromARGB(255, 248, 246, 242);
-final Color actionColor = const Color.fromARGB(255, 255, 210, 57);
-final Color disabledColor = const Color.fromARGB(50, 153, 153, 153);
-
-
-
+import '../global.dart';
 
 class NewReservaSecondStep extends StatelessWidget {
   const NewReservaSecondStep({
@@ -24,7 +17,6 @@ class NewReservaSecondStep extends StatelessWidget {
   Widget build(BuildContext context) {
     return SeleccioDeTaules();
   }
-
 }
 
 class SeleccioDeTaules extends StatelessWidget {
@@ -44,11 +36,9 @@ class TaulesGridAddReserva extends StatelessWidget {
   const TaulesGridAddReserva({
     Key key,
     @required this.servei,
-    
   }) : super(key: key);
 
   final int servei;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -143,10 +133,6 @@ class TaulesGridAddReserva extends StatelessWidget {
     }
   }
 }
-
-
-
-
 
 class InfoPreviewCard extends StatelessWidget {
   const InfoPreviewCard({
