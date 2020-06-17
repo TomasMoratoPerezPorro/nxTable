@@ -5,6 +5,7 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:prototip_tfg/pages/NewReservaSecondStep.dart';
 
 import 'package:provider/provider.dart';
 
@@ -16,14 +17,16 @@ final Color disabledColor = const Color.fromARGB(50, 153, 153, 153);
 class NewReservaProvider with ChangeNotifier {
   DateTime _actualDia = DateTime.now();
   int _numComensales;
-  int _idServicio = 0;
+  int _idServicio;
   String _nom;
   String _telefon;
   int _idTorn;
   int _estat;
   int _idTaula;
+  bool showMissingCamps = false;
 
   int get servei => _idServicio;
+  int get numComensales => _numComensales;
 
   void _setDia(DateTime dia) {
     this._actualDia = dia;
@@ -46,6 +49,25 @@ class NewReservaProvider with ChangeNotifier {
   void _setNumComensales(int i) {
     this._numComensales = i;
     notifyListeners();
+  }
+
+  bool canProceed(int index) {
+    if (index == 0) {
+      if (_numComensales != null && _idServicio != null && _actualDia != null) {
+        return true;
+      } else {
+        showMissingCamps = true;
+        notifyListeners();
+        return false;
+      }
+    }
+  }
+
+  void resetData(){
+    _actualDia = DateTime.now();
+    this._numComensales = null;
+    this._idServicio = null;
+    this.showMissingCamps = false;
   }
 }
 
@@ -70,7 +92,7 @@ class _NewReservasPageState extends State<NewReservasPage> {
       },
       children: <Widget>[
         NewReservaFirstStep(),
-        NewReservaFirstStep(),
+        NewReservaSecondStep(),
         NewReservaFirstStep(),
       ],
     );
@@ -97,6 +119,8 @@ class _NewReservasPageState extends State<NewReservasPage> {
 
   @override
   Widget build(BuildContext context) {
+    final newReservaProvider =
+        Provider.of<NewReservaProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
@@ -133,7 +157,9 @@ class _NewReservasPageState extends State<NewReservasPage> {
                     : InkWell(
                         onTap: () {
                           if (bottomSelectedIndex < 2) {
-                            bottomTapped(bottomSelectedIndex + 1);
+                            if (newReservaProvider
+                                .canProceed(bottomSelectedIndex))
+                              bottomTapped(bottomSelectedIndex + 1);
                           }
                         },
                         child: Icon(Icons.arrow_forward,
@@ -157,7 +183,7 @@ class NewReservaFirstStep extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          TopInfoBar(),
+          TopInfoBar(text: "Selecciona una fecha y servicio disponibles:"),
           ComensalesCard(),
           ServicioCard(),
           CalendarCard(),
@@ -391,6 +417,8 @@ class ServicioCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final newReservaProvider =
+        Provider.of<NewReservaProvider>(context, listen: true);
     Color getColor(int boto) {
       int serveiActual = Provider.of<NewReservaProvider>(context).servei;
       if (serveiActual == boto) {
@@ -413,9 +441,18 @@ class ServicioCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                Text(
-                  "Selecciona el servicio:",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Row(
+                  children: <Widget>[
+                    Text(
+                      "Selecciona el servicio:",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(width: 5),
+                    newReservaProvider.showMissingCamps &&
+                            newReservaProvider._idServicio == null
+                        ? Icon(Icons.announcement, color: Colors.red)
+                        : SizedBox(width: 2),
+                  ],
                 ),
                 SizedBox(height: 15),
                 Row(
@@ -470,6 +507,8 @@ class ComensalesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final newReservaProvider =
+        Provider.of<NewReservaProvider>(context, listen: true);
     return Padding(
       padding: const EdgeInsets.all(8),
       child: SizedBox(
@@ -483,9 +522,18 @@ class ComensalesCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                Text(
-                  "Selecciona el nº de comensales:",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Row(
+                  children: <Widget>[
+                    Text(
+                      "Selecciona el nº de comensales:",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(width: 5),
+                    newReservaProvider.showMissingCamps &&
+                            newReservaProvider._numComensales == null
+                        ? Icon(Icons.announcement, color: Colors.red)
+                        : SizedBox(width: 2),
+                  ],
                 ),
                 SizedBox(height: 15),
                 Row(children: <Widget>[
@@ -541,7 +589,10 @@ class ComensalesButton extends StatelessWidget {
 class TopInfoBar extends StatelessWidget {
   const TopInfoBar({
     Key key,
+    @required this.text,
   }) : super(key: key);
+
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -560,7 +611,7 @@ class TopInfoBar extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(10),
-        child: Text("Selecciona una fecha y servicio disponibles:"),
+        child: Text(text),
       ),
     );
   }

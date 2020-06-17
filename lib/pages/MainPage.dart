@@ -161,6 +161,8 @@ class ServeiProvider with ChangeNotifier {
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final newReservaProvider =
+        Provider.of<NewReservaProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
@@ -184,7 +186,9 @@ class MainPage extends StatelessWidget {
                 return NewReservasPage();
               },
             ),
-          );
+          ).then((result){
+            newReservaProvider.resetData();
+          });
         },
       ),
       bottomNavigationBar: BottomAppBar(
