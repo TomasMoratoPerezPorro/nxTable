@@ -7,7 +7,9 @@ import 'package:prototip_tfg/controllers/CustomApi.dart';
 import 'package:prototip_tfg/pages/DetailReservaPage.dart';
 import 'package:prototip_tfg/pages/NewReservaPage.dart';
 import 'package:prototip_tfg/pages/NewReservaSecondStep.dart';
+import 'package:prototip_tfg/providers/DiaProvider.dart';
 import 'package:prototip_tfg/providers/NewReservaProvider.dart';
+import 'package:prototip_tfg/providers/ServeiProvider.dart';
 import 'package:provider/provider.dart';
 
 final Color mainColor = const Color.fromARGB(255, 44, 64, 114);
@@ -15,150 +17,6 @@ final Color bgColor = const Color.fromARGB(255, 248, 246, 242);
 final Color actionColor = const Color.fromARGB(255, 255, 210, 57);
 final Color disabledColor = const Color.fromARGB(50, 153, 153, 153);
 
-final List<TaulaFisica> taulesFisiquesProva = [
-  TaulaFisica(1, 2),
-  TaulaFisica(2, 2),
-  TaulaFisica(3, 2),
-  TaulaFisica(4, 2),
-  TaulaFisica(5, 2),
-  TaulaFisica(6, 2),
-  TaulaFisica(7, 2),
-  TaulaFisica(8, 2),
-  TaulaFisica(9, 2),
-  TaulaFisica(10, 2),
-  TaulaFisica(11, 2),
-  TaulaFisica(12, 4),
-  TaulaFisica(13, 4),
-  TaulaFisica(14, 4),
-  TaulaFisica(15, 4),
-  TaulaFisica(16, 4),
-];
-
-class DiaProvider with ChangeNotifier {
-  DateTime _actualDia;
-  DiaProvider(actualDia) {
-    this._actualDia = actualDia;
-    _getReservasDia();
-  }
-  bool _isLoading = false;
-  dynamic _reservasDia;
-  CustomApi api = CustomApi();
-
-  DateTime get actualDia => _actualDia;
-
-  Future<void> _getReservasDia() async {
-    _isLoading = true;
-    notifyListeners();
-    try {
-      var stats = await api.getReservasDia(_actualDia);
-      _reservasDia = stats;
-      debugPrint(stats.toString());
-      await new Future.delayed(const Duration(seconds: 1));
-      _isLoading = false;
-      debugPrint(_isLoading.toString());
-      notifyListeners();
-    } catch (ex) {
-      _reservasDia = null;
-      _isLoading = false;
-      notifyListeners();
-      debugPrint(ex.toString());
-      debugPrint("catch EXCEPTION _reservasDia = null");
-    } finally {
-      _isLoading = false;
-      debugPrint("FINALLY");
-      notifyListeners();
-    }
-  }
-
-  void _changeDay(bool direction) async {
-    if (direction) {
-      _actualDia = _actualDia.add(Duration(hours: 24));
-      //debugPrint(_actualDia.toString());
-      await _getReservasDia();
-      notifyListeners();
-    } else {
-      _actualDia = _actualDia.add(Duration(hours: -24));
-      //debugPrint(_actualDia.toString());
-      await _getReservasDia();
-      notifyListeners();
-    }
-  }
-
-  String getDia() {
-    var dt = _actualDia;
-    var newFormat = DateFormat("EEEE, dd MMMM");
-    String updatedDt = newFormat.format(dt);
-    return updatedDt;
-  }
-}
-
-class ServeiProvider with ChangeNotifier {
-  TaulesList _taules;
-  int _actualTorn;
-  int _actualServei;
-  DateTime _actualDia = DateTime.now();
-  List<Reserva> _reservas = [];
-
-  ServeiProvider(this._actualServei, this._actualTorn);
-
-  void update(DiaProvider diaProvider) async {
-    // Do some custom work based on myModel that may call `notifyListeners`
-    _actualDia = diaProvider._actualDia;
-
-    if (diaProvider._reservasDia.reservas != null) {
-      _reservas = diaProvider._reservasDia.reservas;
-      await _setTaulesList();
-      notifyListeners();
-    }
-  }
-
-  TaulesList get taules => _taules;
-  int get torn {
-    if (_actualServei == 1) {
-      return _actualTorn;
-    } else {
-      return _actualTorn - 1;
-    }
-  }
-
-  int get servei => _actualServei;
-
-  _setTaulesList() async {
-    if (_actualServei == 1) {
-      var llistataules = await TaulesList.getLlistaTaules(_actualDia,
-          _actualServei, _actualTorn, taulesFisiquesProva, _reservas);
-      _taules = llistataules;
-      //_actualTorn = 1;
-
-      notifyListeners();
-    } else if (_actualServei == 2) {
-      var llistataules = await TaulesList.getLlistaTaules(_actualDia,
-          _actualServei, _actualTorn, taulesFisiquesProva, _reservas);
-      _taules = llistataules;
-      //_actualTorn = 1;
-
-      notifyListeners();
-    }
-  }
-
-  _changeTaulesList(int torn) async {
-    if (_actualServei == 2) {
-      var llistataules = await TaulesList.getLlistaTaules(
-          _actualDia, _actualServei, torn + 1, taulesFisiquesProva, _reservas);
-      _taules = llistataules;
-      _actualTorn = torn + 1;
-
-      notifyListeners();
-    } else {
-      var llistataules = await TaulesList.getLlistaTaules(
-          _actualDia, _actualServei, torn, taulesFisiquesProva, _reservas);
-      _taules = llistataules;
-      _actualTorn = torn;
-
-      notifyListeners();
-    }
-  }
-}
 
 class MainPage extends StatelessWidget {
   @override
@@ -251,14 +109,14 @@ class MainPageAppBarTitle extends StatelessWidget {
       children: <Widget>[
         InkWell(
           onTap: () {
-            Provider.of<DiaProvider>(context, listen: false)._changeDay(false);
+            Provider.of<DiaProvider>(context, listen: false).changeDay(false);
           },
           child: Icon(Icons.arrow_back),
         ),
         Text(Provider.of<DiaProvider>(context, listen: true).getDia()),
         InkWell(
           onTap: () {
-            Provider.of<DiaProvider>(context, listen: false)._changeDay(true);
+            Provider.of<DiaProvider>(context, listen: false).changeDay(true);
           },
           child: Icon(Icons.arrow_forward),
         ),
@@ -270,7 +128,7 @@ class MainPageAppBarTitle extends StatelessWidget {
 class DinarTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<DiaProvider>(context, listen: true)._isLoading) {
+    if (Provider.of<DiaProvider>(context, listen: true).isLoading) {
       return Center(
           child: CircularProgressIndicator(
         strokeWidth: 4,
@@ -290,7 +148,7 @@ class DinarTab extends StatelessWidget {
 class SoparTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<DiaProvider>(context, listen: true)._isLoading) {
+    if (Provider.of<DiaProvider>(context, listen: true).isLoading) {
       return Center(
           child: CircularProgressIndicator(
         strokeWidth: 4,
@@ -328,7 +186,7 @@ class TaulesGrid extends StatelessWidget {
 
     //Provider.of<ServeiProvider>(context)._setTaulesList();
     if (Provider.of<ServeiProvider>(context).taules == null) {
-      Provider.of<ServeiProvider>(context)._setTaulesList();
+      Provider.of<ServeiProvider>(context).setTaulesList();
       return Center(child: CircularProgressIndicator());
     } else {
       final TaulesList _taules = Provider.of<ServeiProvider>(context).taules;
@@ -363,7 +221,7 @@ class TaulesGrid extends StatelessWidget {
                           ),
                           onPressed: () {
                             Provider.of<ServeiProvider>(context, listen: false)
-                                ._changeTaulesList(1);
+                                .changeTaulesList(1);
                           },
                         ),
                       ),
@@ -380,7 +238,7 @@ class TaulesGrid extends StatelessWidget {
                           ),
                           onPressed: () {
                             Provider.of<ServeiProvider>(context, listen: false)
-                                ._changeTaulesList(2);
+                                .changeTaulesList(2);
                           },
                         ),
                       ),
@@ -591,106 +449,3 @@ class IndicadorEstat extends StatelessWidget {
 
 
 
-class TaulesGridAddReserva extends StatelessWidget {
-  const TaulesGridAddReserva({
-    Key key,
-    @required this.servei,
-    
-  }) : super(key: key);
-
-  final int servei;
-  
-
-  @override
-  Widget build(BuildContext context) {
-    Color getColor(int boto) {
-      int tornActual = Provider.of<ServeiProvider>(context).torn;
-      if (tornActual == boto) {
-        return actionColor;
-      } else {
-        return Colors.grey[350];
-      }
-    }
-
-    //Provider.of<ServeiProvider>(context)._setTaulesList();
-    if (Provider.of<ServeiProvider>(context).taules == null) {
-      Provider.of<ServeiProvider>(context)._setTaulesList();
-      return Center(child: CircularProgressIndicator());
-    } else {
-      final TaulesList _taules = Provider.of<ServeiProvider>(context).taules;
-      return CustomScrollView(
-        shrinkWrap: true,
-        slivers: <Widget>[
-          SliverAppBar(
-            backgroundColor: bgColor,
-            floating: false,
-            pinned: false,
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(120),
-              child: Column(
-                children: <Widget>[
-                  InfoPreviewCard(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 40,
-                        width: 100,
-                        child: Consumer<ServeiProvider>(
-                          builder: (context, provider, _) => RaisedButton(
-                            color: getColor(1),
-                            child: Text(
-                              "Turno 1",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            onPressed: () {
-                              Provider.of<ServeiProvider>(context,
-                                      listen: false)
-                                  ._changeTaulesList(1);
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      SizedBox(
-                        height: 40,
-                        width: 100,
-                        child: Consumer<ServeiProvider>(
-                          builder: (context, provider, _) => RaisedButton(
-                            color: getColor(2),
-                            child: Text(
-                              "Turno 2",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            onPressed: () {
-                              Provider.of<ServeiProvider>(context,
-                                      listen: false)
-                                  ._changeTaulesList(2);
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                ],
-              ),
-            ),
-          ),
-          SliverGrid(
-            gridDelegate:
-                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                if (index > _taules.taulesInfoList.length - 1) return null;
-                return TaulaStack(taula: _taules.taulesInfoList[index]);
-              },
-              childCount: _taules.taulesInfoList.length,
-            ),
-          )
-        ],
-      );
-    }
-  }
-}
