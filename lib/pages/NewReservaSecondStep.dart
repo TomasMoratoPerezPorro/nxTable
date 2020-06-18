@@ -5,6 +5,9 @@ import 'package:prototip_tfg/providers/DiaProvider.dart';
 import 'package:prototip_tfg/providers/NewReservaProvider.dart';
 import 'package:prototip_tfg/providers/SeleccioTaulaProvider.dart';
 import 'package:prototip_tfg/providers/ServeiProvider.dart';
+import 'package:prototip_tfg/widgets/mainPageWidgets/TaulaInfoCardCapacitat.dart';
+import 'package:prototip_tfg/widgets/mainPageWidgets/TaulaInfoCardId.dart';
+import 'package:prototip_tfg/widgets/mainPageWidgets/TaulaInfoCardNom.dart';
 import 'package:prototip_tfg/widgets/mainPageWidgets/TaulaStack.dart';
 import 'package:provider/provider.dart';
 
@@ -85,7 +88,6 @@ class CustomScrollViewTaules extends StatelessWidget {
         return Colors.grey[350];
       }
     }
-    
 
     final TaulesList _taules =
         Provider.of<SeleccioTaulaProvider>(context, listen: true).taules;
@@ -139,9 +141,16 @@ class CustomScrollViewTaules extends StatelessWidget {
                               style: TextStyle(fontSize: 16),
                             ),
                             onPressed: () {
-                              Provider.of<SeleccioTaulaProvider>(context,
-                                      listen: false)
-                                  .changeTaulesList(2);
+                              if (Provider.of<SeleccioTaulaProvider>(context,
+                                          listen: false)
+                                      .servei ==
+                                  1) {
+                                null;
+                              } else {
+                                Provider.of<SeleccioTaulaProvider>(context,
+                                        listen: false)
+                                    .changeTaulesList(2);
+                              }
                             },
                           ),
                         ),
@@ -159,7 +168,7 @@ class CustomScrollViewTaules extends StatelessWidget {
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
                 if (index > _taules.taulesInfoList.length - 1) return null;
-                return TaulaStack(taula: _taules.taulesInfoList[index]);
+                return TaulaStackSelect(taula: _taules.taulesInfoList[index]);
               },
               childCount: _taules.taulesInfoList.length,
             ),
@@ -167,6 +176,96 @@ class CustomScrollViewTaules extends StatelessWidget {
         ],
       );
     }
+  }
+}
+
+class TaulaStackSelect extends StatelessWidget {
+  const TaulaStackSelect({
+    Key key,
+    @required this.taula,
+  }) : super(key: key);
+
+  final Taula taula;
+
+  @override
+  Widget build(BuildContext context) {
+    return Provider<Taula>.value(
+      value: taula,
+      child: Container(
+        width: 171,
+        height: 130,
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          margin: EdgeInsets.all(10),
+          child: TaulaSelectElement(),
+        ),
+      ),
+    );
+  }
+}
+
+class TaulaSelectElement extends StatefulWidget {
+  const TaulaSelectElement({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _TaulaSelectElementState createState() => _TaulaSelectElementState();
+}
+
+class _TaulaSelectElementState extends State<TaulaSelectElement> {
+  bool isSelected = false;
+  void toggleSelected(Taula taula) {
+    if (isSelected == false && !taula.isreserva) {
+      setState(() {
+        isSelected = true;
+      });
+    } else {
+      setState(() {
+        isSelected = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final taula = Provider.of<Taula>(context);
+    return InkWell(
+        customBorder:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        splashColor: actionColor,
+        onTap: () {
+          toggleSelected(taula);
+        },
+        child: Stack(
+          children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                TaulaInfoCardNom(),
+                TaulaInfoCardCapacitat(),
+                TaulaInfoCardId()
+              ],
+            ),
+            isSelected && !taula.isreserva
+                ? Positioned(
+                    bottom: 45,
+                    left: 28,
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: actionColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.check, size: 30,),
+                    ),
+                  )
+                : SizedBox()
+          ],
+        ));
   }
 }
 

@@ -14,7 +14,7 @@ class TaulaInfoCardId extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: Container(
-              margin: EdgeInsets.only(top: 6),
+              margin: EdgeInsets.only(top: 9),
               height: 30,
               decoration: BoxDecoration(
                 color: (taula.isreserva
@@ -27,7 +27,7 @@ class TaulaInfoCardId extends StatelessWidget {
                     bottomRight: Radius.circular(10)),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(5.0),
                 child: Text(
                   'Taula ${taula.id.toString()}',
                   textAlign: TextAlign.center,

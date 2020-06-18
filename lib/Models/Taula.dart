@@ -7,8 +7,11 @@ class Taula {
   int maxpersonas;
   bool isreserva;
   Reserva reserva;
+  bool isSelected = false;
 
   Taula(this.id, this.maxpersonas, this.isreserva, this.reserva);
+
+  
 }
 
 class TaulesList {
