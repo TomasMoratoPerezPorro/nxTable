@@ -14,6 +14,7 @@ class NewReservaProvider with ChangeNotifier {
 
   int get servei => _idServicio;
   int get numComensales => _numComensales;
+  DateTime get actualDia => _actualDia;
 
   void setDia(DateTime dia) {
     this._actualDia = dia;

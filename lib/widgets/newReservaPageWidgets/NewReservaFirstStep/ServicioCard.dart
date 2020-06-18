@@ -63,6 +63,7 @@ class ServicioCard extends StatelessWidget {
                           Provider.of<NewReservaProvider>(context,
                                   listen: false)
                               .setServei(1);
+                              
                         },
                       ),
                     ),
@@ -73,7 +74,7 @@ class ServicioCard extends StatelessWidget {
                       builder: (context, provider, _) => RaisedButton(
                         color: getColor(2),
                         child: Text(
-                          "Comida",
+                          "Cena",
                           style: TextStyle(fontSize: 16),
                         ),
                         onPressed: () {

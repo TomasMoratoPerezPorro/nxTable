@@ -120,6 +120,7 @@ class _CalendarCardState extends State<CalendarCard> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime _currentDate2 = Provider.of<NewReservaProvider>(context, listen: false).actualDia;
     
     void setDia(DateTime currentDate2) {
       Provider.of<NewReservaProvider>(context, listen: false).setDia(_currentDate2);

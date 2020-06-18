@@ -74,17 +74,6 @@ class MainPage extends StatelessWidget {
 }
 
 
-
-/* Provider.of<DiaProvider>(context, listen: false)._isLoading
-        ? CircularProgressIndicator()
-        : TabBarView(
-          children: <Widget>[
-            DinarTab(),
-            SoparTab(),
-          ],
-        ),
- */
-
 class MainPageAppBarTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

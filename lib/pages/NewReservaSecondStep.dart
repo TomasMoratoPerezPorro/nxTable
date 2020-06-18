@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:prototip_tfg/Models/ReservasDia.dart';
 import 'package:prototip_tfg/Models/Taula.dart';
 import 'package:prototip_tfg/providers/DiaProvider.dart';
 import 'package:prototip_tfg/providers/NewReservaProvider.dart';
+import 'package:prototip_tfg/providers/SeleccioTaulaProvider.dart';
 import 'package:prototip_tfg/providers/ServeiProvider.dart';
 import 'package:prototip_tfg/widgets/mainPageWidgets/TaulaStack.dart';
 import 'package:provider/provider.dart';
@@ -22,13 +24,8 @@ class NewReservaSecondStep extends StatelessWidget {
 class SeleccioDeTaules extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProxyProvider<DiaProvider, ServeiProvider>(
-        create: (_) => ServeiProvider(1, 1),
-        update: (_, diaProvider, serveiProvider) =>
-            serveiProvider..update(diaProvider),
-        child: TaulesGridAddReserva(
-          servei: 1,
-        ));
+    return TaulesGridAddReserva(
+        servei: Provider.of<NewReservaProvider>(context, listen: false).servei);
   }
 }
 
@@ -42,21 +39,60 @@ class TaulesGridAddReserva extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<ReservasDia>(
+      future: Provider.of<SeleccioTaulaProvider>(context, listen: false)
+          .getReservasDia(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return Text(
+              'Fetch chuck joke.',
+              textAlign: TextAlign.center,
+            );
+          case ConnectionState.active:
+            return Text('');
+          case ConnectionState.waiting:
+            return Center(
+                child: Container(
+                    child: CircularProgressIndicator(strokeWidth: 4)));
+          case ConnectionState.done:
+            if (snapshot.hasError) {
+              return Text("Error");
+            } else {
+              return CustomScrollViewTaules();
+            }
+        }
+        return CircularProgressIndicator(strokeWidth: 4);
+      },
+    );
+  }
+}
+
+class CustomScrollViewTaules extends StatelessWidget {
+  const CustomScrollViewTaules({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     Color getColor(int boto) {
-      int tornActual = Provider.of<ServeiProvider>(context).torn;
+      int tornActual =
+          Provider.of<SeleccioTaulaProvider>(context, listen: false).torn;
+
       if (tornActual == boto) {
         return actionColor;
       } else {
         return Colors.grey[350];
       }
     }
+    
 
-    //Provider.of<ServeiProvider>(context)._setTaulesList();
-    if (Provider.of<ServeiProvider>(context).taules == null) {
-      Provider.of<ServeiProvider>(context).setTaulesList();
-      return Center(child: CircularProgressIndicator());
+    final TaulesList _taules =
+        Provider.of<SeleccioTaulaProvider>(context, listen: true).taules;
+    if (_taules == null) {
+      Provider.of<SeleccioTaulaProvider>(context, listen: true).setTaulesList();
+      return CircularProgressIndicator();
     } else {
-      final TaulesList _taules = Provider.of<ServeiProvider>(context).taules;
       return CustomScrollView(
         shrinkWrap: true,
         slivers: <Widget>[
@@ -76,7 +112,7 @@ class TaulesGridAddReserva extends StatelessWidget {
                       SizedBox(
                         height: 40,
                         width: 100,
-                        child: Consumer<ServeiProvider>(
+                        child: Consumer<SeleccioTaulaProvider>(
                           builder: (context, provider, _) => RaisedButton(
                             color: getColor(1),
                             child: Text(
@@ -84,7 +120,7 @@ class TaulesGridAddReserva extends StatelessWidget {
                               style: TextStyle(fontSize: 16),
                             ),
                             onPressed: () {
-                              Provider.of<ServeiProvider>(context,
+                              Provider.of<SeleccioTaulaProvider>(context,
                                       listen: false)
                                   .changeTaulesList(1);
                             },
@@ -95,7 +131,7 @@ class TaulesGridAddReserva extends StatelessWidget {
                       SizedBox(
                         height: 40,
                         width: 100,
-                        child: Consumer<ServeiProvider>(
+                        child: Consumer<SeleccioTaulaProvider>(
                           builder: (context, provider, _) => RaisedButton(
                             color: getColor(2),
                             child: Text(
@@ -103,7 +139,7 @@ class TaulesGridAddReserva extends StatelessWidget {
                               style: TextStyle(fontSize: 16),
                             ),
                             onPressed: () {
-                              Provider.of<ServeiProvider>(context,
+                              Provider.of<SeleccioTaulaProvider>(context,
                                       listen: false)
                                   .changeTaulesList(2);
                             },
