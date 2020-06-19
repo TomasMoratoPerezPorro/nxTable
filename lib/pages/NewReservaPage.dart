@@ -57,10 +57,11 @@ class _NewReservasPageState extends State<NewReservasPage> {
   Widget build(BuildContext context) {
     final newReservaProvider =
         Provider.of<NewReservaProvider>(context, listen: false);
-    return ChangeNotifierProxyProvider<NewReservaProvider, SeleccioTaulaProvider>(
+    return ChangeNotifierProxyProvider<NewReservaProvider,
+        SeleccioTaulaProvider>(
       create: (context) => SeleccioTaulaProvider(),
       update: (_, newReservaProvider, seleccioTaulaProvider) =>
-              seleccioTaulaProvider..update(newReservaProvider),
+          seleccioTaulaProvider..update(newReservaProvider),
       child: Scaffold(
         backgroundColor: bgColor,
         appBar: AppBar(
@@ -81,6 +82,9 @@ class _NewReservasPageState extends State<NewReservasPage> {
                       : InkWell(
                           onTap: () {
                             if (bottomSelectedIndex > 0) {
+                              if (bottomSelectedIndex == 1) {
+                                newReservaProvider.resetDataStep2();
+                              }
                               bottomTapped(bottomSelectedIndex - 1);
                             }
                           },

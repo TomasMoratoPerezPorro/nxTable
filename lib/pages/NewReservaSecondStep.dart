@@ -90,7 +90,7 @@ class CustomScrollViewTaules extends StatelessWidget {
     }
 
     final TaulesList _taules =
-        Provider.of<SeleccioTaulaProvider>(context, listen: true).taules;
+        Provider.of<SeleccioTaulaProvider>(context, listen: false).taules;
     if (_taules == null) {
       Provider.of<SeleccioTaulaProvider>(context, listen: true).setTaulesList();
       return CircularProgressIndicator();
@@ -216,20 +216,33 @@ class TaulaSelectElement extends StatefulWidget {
 
 class _TaulaSelectElementState extends State<TaulaSelectElement> {
   bool isSelected = false;
-  void toggleSelected(Taula taula) {
-    if (isSelected == false && !taula.isreserva) {
-      setState(() {
-        isSelected = true;
-      });
-    } else {
-      setState(() {
-        isSelected = false;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    final newReservaProvider =
+        Provider.of<NewReservaProvider>(context, listen: false);
+    void toggleSelected(Taula taula) {
+      debugPrint(taula.id.toString());
+      if (isSelected == false && !taula.isreserva) {
+        if (newReservaProvider.setNumComensalesSelected(
+                taula.maxpersonas, taula.id) ==
+            true) {
+          setState(() {
+            isSelected = true;
+          });
+        }
+      } else {
+        debugPrint("ENTRA SEMPRE");
+        if (!taula.isreserva) {
+          newReservaProvider.unselectTaula(taula);
+        }
+
+        setState(() {
+          isSelected = false;
+        });
+      }
+    }
+
     final taula = Provider.of<Taula>(context);
     return InkWell(
         customBorder:
@@ -260,7 +273,10 @@ class _TaulaSelectElementState extends State<TaulaSelectElement> {
                         color: actionColor,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.check, size: 30,),
+                      child: Icon(
+                        Icons.check,
+                        size: 30,
+                      ),
                     ),
                   )
                 : SizedBox()
@@ -324,13 +340,18 @@ class NumeroComensalesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final newReservaProvider =
-        Provider.of<NewReservaProvider>(context, listen: true);
+        Provider.of<NewReservaProvider>(context, listen: false);
     return Row(
       children: <Widget>[
         Icon(
           Icons.supervisor_account,
           color: Colors.black,
           size: 25,
+        ),
+        SizedBox(width: 5),
+        Text(
+          "${newReservaProvider.numComensalesSelected.toString()} /",
+          style: TextStyle(fontSize: 16, color: Colors.black),
         ),
         SizedBox(width: 5),
         Text(
