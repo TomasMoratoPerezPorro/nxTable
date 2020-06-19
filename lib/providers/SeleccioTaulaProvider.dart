@@ -32,6 +32,7 @@ class SeleccioTaulaProvider with ChangeNotifier {
   int _actualServei = 1;
   DateTime _actualDia = DateTime.now();
   ReservasDia _reservasDia;
+  
   CustomApi api = CustomApi();
 
 
@@ -43,6 +44,7 @@ class SeleccioTaulaProvider with ChangeNotifier {
   void update(NewReservaProvider newReservaProviderProvider)  {
     _actualDia = newReservaProviderProvider.actualDia;
     _actualServei = newReservaProviderProvider.servei;
+    
     if(_actualServei == 2){
       _actualTorn = 2;
     }else{

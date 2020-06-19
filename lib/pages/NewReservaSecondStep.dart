@@ -205,41 +205,25 @@ class TaulaStackSelect extends StatelessWidget {
   }
 }
 
-class TaulaSelectElement extends StatefulWidget {
+class TaulaSelectElement extends StatelessWidget {
   const TaulaSelectElement({
     Key key,
   }) : super(key: key);
 
   @override
-  _TaulaSelectElementState createState() => _TaulaSelectElementState();
-}
-
-class _TaulaSelectElementState extends State<TaulaSelectElement> {
-  bool isSelected = false;
-
-  @override
   Widget build(BuildContext context) {
     final newReservaProvider =
-        Provider.of<NewReservaProvider>(context, listen: false);
+        Provider.of<NewReservaProvider>(context, listen: true);
     void toggleSelected(Taula taula) {
-      debugPrint(taula.id.toString());
+      bool isSelected = newReservaProvider.idTaula.contains(taula.id);
       if (isSelected == false && !taula.isreserva) {
-        if (newReservaProvider.setNumComensalesSelected(
-                taula.maxpersonas, taula.id) ==
-            true) {
-          setState(() {
-            isSelected = true;
-          });
-        }
+        newReservaProvider.setNumComensalesSelected(
+            taula.maxpersonas, taula.id);
       } else {
         debugPrint("ENTRA SEMPRE");
         if (!taula.isreserva) {
           newReservaProvider.unselectTaula(taula);
         }
-
-        setState(() {
-          isSelected = false;
-        });
       }
     }
 
@@ -262,7 +246,7 @@ class _TaulaSelectElementState extends State<TaulaSelectElement> {
                 TaulaInfoCardId()
               ],
             ),
-            isSelected && !taula.isreserva
+            newReservaProvider.idTaula.contains(taula.id) && !taula.isreserva
                 ? Positioned(
                     bottom: 45,
                     left: 28,
@@ -284,6 +268,8 @@ class _TaulaSelectElementState extends State<TaulaSelectElement> {
         ));
   }
 }
+
+
 
 class InfoPreviewCard extends StatelessWidget {
   const InfoPreviewCard({
@@ -340,7 +326,7 @@ class NumeroComensalesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final newReservaProvider =
-        Provider.of<NewReservaProvider>(context, listen: false);
+        Provider.of<NewReservaProvider>(context, listen: true);
     return Row(
       children: <Widget>[
         Icon(

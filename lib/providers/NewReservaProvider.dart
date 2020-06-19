@@ -18,15 +18,17 @@ class NewReservaProvider with ChangeNotifier {
   int get numComensales => _numComensales;
   DateTime get actualDia => _actualDia;
   int get numComensalesSelected => _numComensalesSelected;
+  List<int> get idTaula => _idTaula;
 
   bool setNumComensalesSelected(int n, int id) {
     if ((_numComensalesSelected + n) > _numComensales + 1) {
       return false;
     } else {
       _numComensalesSelected += n;
-      /* notifyListeners(); */
+       notifyListeners(); 
       _idTaula.add(id);
       debugPrint("id_TAULA=  " + _idTaula.toString());
+      
 
       return true;
     }
@@ -35,7 +37,7 @@ class NewReservaProvider with ChangeNotifier {
   void unselectTaula(Taula taula) {
     _idTaula.remove(taula.id);
     _numComensalesSelected -= taula.maxpersonas;
-    /* notifyListeners(); */
+    notifyListeners(); 
     debugPrint("REMOVED");
   }
 
