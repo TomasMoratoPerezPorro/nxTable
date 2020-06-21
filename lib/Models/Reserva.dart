@@ -16,9 +16,33 @@ class Reserva {
   String horaEntrada;
   int estat;
   int numComensals;
+  List<int> taules;
 
-  Reserva({this.id, this.servei, this.torn, this.nom, this.telefon, this.taula,
-      this.comentaris, this.horaEntrada, this.dia, this.estat, this.numComensals});
+  Reserva(
+      {this.id,
+      this.servei,
+      this.torn,
+      this.nom,
+      this.telefon,
+      this.taula,
+      this.comentaris,
+      this.horaEntrada,
+      this.dia,
+      this.estat,
+      this.numComensals});
+
+  Reserva.multiple(
+      {this.id,
+      this.servei,
+      this.torn,
+      this.nom,
+      this.telefon,
+      this.comentaris,
+      this.horaEntrada,
+      this.dia,
+      this.estat,
+      this.numComensals,
+      this.taules});
 
   factory Reserva.fromJson(Map<String, dynamic> json) {
     return Reserva(
@@ -36,9 +60,6 @@ class Reserva {
     );
   }
 
-
-
-
   String getDia() {
     var dt = this.dia;
     var newFormat = DateFormat("EEEE, dd MMMM");
@@ -46,17 +67,16 @@ class Reserva {
     return updatedDt;
   }
 
-  String serveiToString(){
-    if(this.servei==1){
+  String serveiToString() {
+    if (this.servei == 1) {
       return "Comida";
-    }if(this.servei==2){
+    }
+    if (this.servei == 2) {
       return "Cena";
-    }else{
+    } else {
       return "Error";
     }
   }
-
-  
 
   Color getColorEstat() {
     switch (this.estat) {

@@ -9,7 +9,7 @@ class NewReservaProvider with ChangeNotifier {
   int _idServicio;
   String _nom;
   String _telefon;
-  String _comentaris="";
+  String _comentaris = "";
   int _idTorn;
   int _estat;
   List<int> _idTaula = [];
@@ -22,24 +22,36 @@ class NewReservaProvider with ChangeNotifier {
   int get numComensalesSelected => _numComensalesSelected;
   List<int> get idTaula => _idTaula;
 
-
-
-
   Reserva createReservaObject(int torn) {
-    debugPrint("TORN:   "+torn.toString());
-    var reserva = new Reserva(
-        id: 0,
-        servei: _idServicio,
-        torn: _idTorn,
-        nom: _nom,
-        telefon: _telefon,
-        taula: _idTaula[0],
-        comentaris: _comentaris,
-        horaEntrada: "Hora",
-        dia:_actualDia,
-        estat: 2,
-        numComensals:_numComensales);
-    return reserva;
+    if (_idTaula.length > 1) {
+      var reserva = new Reserva.multiple(
+          id: 0,
+          servei: _idServicio,
+          torn: _idTorn,
+          nom: _nom,
+          telefon: _telefon,
+          comentaris: _comentaris,
+          horaEntrada: "Hora",
+          dia: _actualDia,
+          estat: 2,
+          numComensals: _numComensales,
+          taules: _idTaula);
+      return reserva;
+    } else {
+      var reserva = new Reserva(
+          id: 0,
+          servei: _idServicio,
+          torn: _idTorn,
+          nom: _nom,
+          telefon: _telefon,
+          taula: _idTaula[0],
+          comentaris: _comentaris,
+          horaEntrada: "Hora",
+          dia: _actualDia,
+          estat: 2,
+          numComensals: _numComensales);
+      return reserva;
+    }
   }
 
   void setNom(String nom) {
@@ -147,7 +159,7 @@ class NewReservaProvider with ChangeNotifier {
     this._nom = null;
     this._comentaris = null;
     this._telefon = null;
-    this._idTaula =[];
+    this._idTaula = [];
     this._numComensalesSelected = 0;
   }
 

@@ -4,8 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../global.dart';
 
-
-
 class DetailReservaPage extends StatelessWidget {
   const DetailReservaPage({
     Key key,
@@ -75,7 +73,10 @@ class DetailsWidget extends StatelessWidget {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(10),
-                      child: Icon(Icons.call, size: 18,),
+                      child: Icon(
+                        Icons.call,
+                        size: 18,
+                      ),
                     ),
                   ),
                   SizedBox(width: 15),
@@ -287,7 +288,9 @@ class InfoReservaDetails extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(top: 5),
                   child: Text(
-                    "Mesa ${reserva.taula.toString()}",
+                    reserva.taula == null
+                        ? "Mesa ${reserva.taules.toString()}"
+                        : "Mesa ${reserva.taula.toString()}",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -324,7 +327,3 @@ class NumeroComensalesWidget extends StatelessWidget {
     );
   }
 }
-
-
-
-
