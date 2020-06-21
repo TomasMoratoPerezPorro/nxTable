@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:prototip_tfg/pages/NewReservaConfirmationStep.dart';
 import 'package:prototip_tfg/pages/NewReservaSecondStep.dart';
+import 'package:prototip_tfg/pages/NewReservaThirdStep.dart';
 import 'package:prototip_tfg/providers/NewReservaProvider.dart';
 import 'package:prototip_tfg/providers/SeleccioTaulaProvider.dart';
 import 'package:prototip_tfg/widgets/newReservaPageWidgets/NewReservaFirstStep/NewReservaFirstStep.dart';
@@ -17,7 +19,7 @@ class _NewReservasPageState extends State<NewReservasPage> {
 
   PageController pageController = PageController(
     initialPage: 0,
-    keepPage: true,
+    keepPage: false,
   );
 
   Widget buildPageView() {
@@ -29,7 +31,8 @@ class _NewReservasPageState extends State<NewReservasPage> {
       children: <Widget>[
         NewReservaFirstStep(),
         NewReservaSecondStep(),
-        NewReservaFirstStep(),
+        NewReservaThirdStep(),
+        NewReservaConfirmationStep(),
       ],
     );
   }
@@ -68,6 +71,17 @@ class _NewReservasPageState extends State<NewReservasPage> {
           title: Text('New Reserva'),
           backgroundColor: mainColor,
         ),
+        floatingActionButton: bottomSelectedIndex == 3
+            ? FloatingActionButton(
+                foregroundColor: Colors.black,
+                backgroundColor: actionColor,
+                child: const Icon(
+                  Icons.check,
+                  size: 30,
+                ),
+                onPressed: () {})
+            : null,
+        /* floatingActionButton: FloatingActionButton(onPressed: (){}), */
         bottomNavigationBar: BottomAppBar(
             color: mainColor,
             child: Padding(
@@ -94,13 +108,13 @@ class _NewReservasPageState extends State<NewReservasPage> {
                   SizedBox(
                     height: 35,
                   ),
-                  bottomSelectedIndex == 2
+                  bottomSelectedIndex == 3
                       ? SizedBox(
                           height: 35,
                         )
                       : InkWell(
                           onTap: () {
-                            if (bottomSelectedIndex < 2) {
+                            if (bottomSelectedIndex < 3) {
                               if (newReservaProvider
                                   .canProceed(bottomSelectedIndex))
                                 bottomTapped(bottomSelectedIndex + 1);

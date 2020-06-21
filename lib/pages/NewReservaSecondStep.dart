@@ -42,6 +42,24 @@ class TaulesGridAddReserva extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final seleccioTaulaProvider =
+        Provider.of<SeleccioTaulaProvider>(context, listen: false);
+    return seleccioTaulaProvider.reservasDia == null
+        ? CircularProgressIndicator(strokeWidth: 4)
+        : CustomScrollViewTaules();
+  }
+}
+/* 
+class TaulesGridAddReserva extends StatelessWidget {
+  const TaulesGridAddReserva({
+    Key key,
+    @required this.servei,
+  }) : super(key: key);
+
+  final int servei;
+
+  @override
+  Widget build(BuildContext context) {
     return FutureBuilder<ReservasDia>(
       future: Provider.of<SeleccioTaulaProvider>(context, listen: false)
           .getReservasDia(),
@@ -69,7 +87,38 @@ class TaulesGridAddReserva extends StatelessWidget {
       },
     );
   }
-}
+} */
+
+/* class TaulesGridAddReserva extends StatelessWidget {
+  const TaulesGridAddReserva({
+    Key key,
+    @required this.servei,
+  }) : super(key: key);
+
+  final int servei;
+
+  @override
+  Widget build(BuildContext context) {
+    final reservas =
+        Provider.of<SeleccioTaulaProvider>(context, listen: false).reservasDia;
+
+    return reservas == null
+        ? FutureProvider<ReservasDia>(
+            create: (_) {
+              return Provider.of<SeleccioTaulaProvider>(context, listen: false)
+                  .getReservasDia();
+            },
+            child: Consumer<ReservasDia>(builder: (_, value, __) {
+              if (value == null) {
+                return CircularProgressIndicator(strokeWidth: 4);
+              } else {
+                return CustomScrollViewTaules();
+              }
+            }),
+          )
+        : CustomScrollViewTaules();
+  }
+} */
 
 class CustomScrollViewTaules extends StatelessWidget {
   const CustomScrollViewTaules({
@@ -269,8 +318,6 @@ class TaulaSelectElement extends StatelessWidget {
   }
 }
 
-
-
 class InfoPreviewCard extends StatelessWidget {
   const InfoPreviewCard({
     Key key,
@@ -344,6 +391,12 @@ class NumeroComensalesWidget extends StatelessWidget {
           newReservaProvider.numComensales.toString(),
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
+        SizedBox(width: 5),
+        newReservaProvider.showMissingCamps &&
+                newReservaProvider.numComensalesSelected <
+                    newReservaProvider.numComensales
+            ? Icon(Icons.announcement, color: Colors.red)
+            : SizedBox(width: 2),
       ],
     );
   }
