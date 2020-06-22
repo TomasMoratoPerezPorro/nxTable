@@ -18,9 +18,44 @@ class NewReservaConfirmationStep extends StatelessWidget {
       child: Column(
         children: <Widget>[
           TopInfoBar(text: "Confirma la información: "),
-          DetailsWidget(reserva: reserva),
+          newReservaProvider.reservaConfirmada
+              ? ReservaConfirmadaWidget()
+              : DetailsWidget(reserva: reserva),
         ],
       ),
     );
+  }
+}
+
+class ReservaConfirmadaWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+        future: Provider.of<NewReservaProvider>(context, listen: true)
+            .saveReserva(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return Center(
+                child: Text(
+                  'Fetch chuck joke.',
+                  textAlign: TextAlign.center,
+                ),
+              );
+            case ConnectionState.active:
+              return Center(child: CircularProgressIndicator(strokeWidth: 4));
+            case ConnectionState.waiting:
+              return Center(
+                  child: Container(
+                      child: CircularProgressIndicator(strokeWidth: 4)));
+            case ConnectionState.done:
+              if (snapshot.hasError) {
+                return Center(child: Text("Error creating reserva"));
+              } else {
+                return Center(child: Text("No error"));
+              }
+          }
+          return CircularProgressIndicator(strokeWidth: 4);
+        });
   }
 }

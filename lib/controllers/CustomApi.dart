@@ -27,4 +27,15 @@ class CustomApi {
     final mypased = ReservasDia.fromJson(parsed,data);
     return mypased;
   }
+
+  Future<bool> putNewReserva(Reserva reserva) async{
+    debugPrint("IN CUSTOM API putNewReserva: " + reserva.toString());
+    var response = await netWorkCalls.post(UrlConstants.baseUrl,reserva);
+    debugPrint("RESPONSE CUSTOM API putNewReserva: " + response.toString());
+    if(response != null){
+      return true;
+    }else{
+      return false;
+    }
+  }
 }

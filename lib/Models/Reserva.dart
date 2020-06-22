@@ -60,9 +60,29 @@ class Reserva {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['nom'] = this.nom;
+    data['telefon'] = this.telefon;
+    data['torn'] = this.torn;
+    data['data'] = getDiaShort();
+    data['num_comensals'] = this.numComensals;
+    data['estat'] = this.estat;
+    data['comentaris'] = this.comentaris;
+    data['id_taula'] = this.taules;
+    return data;
+  }
+
   String getDia() {
     var dt = this.dia;
     var newFormat = DateFormat("EEEE, dd MMMM");
+    String updatedDt = newFormat.format(dt);
+    return updatedDt;
+  }
+
+  String getDiaShort() {
+    var dt = this.dia;
+    var newFormat = DateFormat("yyyy-MM-dd");
     String updatedDt = newFormat.format(dt);
     return updatedDt;
   }

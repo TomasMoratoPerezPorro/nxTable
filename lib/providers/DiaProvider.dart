@@ -54,6 +54,11 @@ class DiaProvider with ChangeNotifier {
     }
   }
 
+  void refreshDay() async {
+    await _getReservasDia();
+    notifyListeners();
+  }
+
   String getDia() {
     var dt = _actualDia;
     var newFormat = DateFormat("EEEE, dd MMMM");

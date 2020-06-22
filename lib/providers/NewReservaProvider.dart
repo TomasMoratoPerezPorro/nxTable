@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:prototip_tfg/Models/Reserva.dart';
 import 'package:prototip_tfg/Models/Taula.dart';
+import 'package:prototip_tfg/controllers/CustomApi.dart';
 
 class NewReservaProvider with ChangeNotifier {
   DateTime _actualDia = DateTime.now();
@@ -15,7 +16,37 @@ class NewReservaProvider with ChangeNotifier {
   List<int> _idTaula = [];
   bool showMissingCamps = false;
   int _numComensalesSelected = 0;
+  Reserva _finalReserva;
+  bool _reservaConfirmada = false;
+  CustomApi api = CustomApi();
 
+  Future<bool> saveReserva() async {
+    try {
+      var stats = await api.putNewReserva(_finalReserva);
+      return true;
+    } catch (ex) {
+      debugPrint("DEBUG ERROR SAVING RESERVA: " + ex.toString());
+      return null;
+    } finally {
+      /* notifyListeners(); */
+    }
+  }
+
+  void confirmarReserva(bool confirmacio) {
+    debugPrint("IN confirmarReserva");
+    if (confirmacio) {
+      _reservaConfirmada = true;
+      debugPrint(_reservaConfirmada.toString());
+      notifyListeners();
+    } else {
+      _reservaConfirmada = false;
+      debugPrint(_reservaConfirmada.toString());
+      notifyListeners();
+    }
+  }
+
+  bool get reservaConfirmada => _reservaConfirmada;
+  Reserva get finalReserva => _finalReserva;
   int get servei => _idServicio;
   int get numComensales => _numComensales;
   DateTime get actualDia => _actualDia;
@@ -23,35 +54,20 @@ class NewReservaProvider with ChangeNotifier {
   List<int> get idTaula => _idTaula;
 
   Reserva createReservaObject(int torn) {
-    if (_idTaula.length > 1) {
-      var reserva = new Reserva.multiple(
-          id: 0,
-          servei: _idServicio,
-          torn: _idTorn,
-          nom: _nom,
-          telefon: _telefon,
-          comentaris: _comentaris,
-          horaEntrada: "Hora",
-          dia: _actualDia,
-          estat: 2,
-          numComensals: _numComensales,
-          taules: _idTaula);
-      return reserva;
-    } else {
-      var reserva = new Reserva(
-          id: 0,
-          servei: _idServicio,
-          torn: _idTorn,
-          nom: _nom,
-          telefon: _telefon,
-          taula: _idTaula[0],
-          comentaris: _comentaris,
-          horaEntrada: "Hora",
-          dia: _actualDia,
-          estat: 2,
-          numComensals: _numComensales);
-      return reserva;
-    }
+    var reserva = new Reserva.multiple(
+        id: 0,
+        servei: _idServicio,
+        torn: _idTorn,
+        nom: _nom,
+        telefon: _telefon,
+        comentaris: _comentaris,
+        horaEntrada: "Hora",
+        dia: _actualDia,
+        estat: 2,
+        numComensals: _numComensales,
+        taules: _idTaula);
+    this._finalReserva = reserva;
+    return reserva;
   }
 
   void setNom(String nom) {
@@ -161,6 +177,9 @@ class NewReservaProvider with ChangeNotifier {
     this._telefon = null;
     this._idTaula = [];
     this._numComensalesSelected = 0;
+    this._reservaConfirmada = false;
+    this._finalReserva=null;
+    
   }
 
   void resetDataStep2() {
