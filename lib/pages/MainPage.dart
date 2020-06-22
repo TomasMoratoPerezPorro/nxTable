@@ -41,8 +41,9 @@ class MainPage extends StatelessWidget {
               },
             ),
           ).then((result){
-            Provider.of<DiaProvider>(context, listen: true).refreshDay();
             newReservaProvider.resetData();
+            Provider.of<DiaProvider>(context, listen: false).refreshDay(); 
+            
 
           });
         },

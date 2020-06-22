@@ -124,7 +124,8 @@ class _NewReservasPageState extends State<NewReservasPage> {
                   size: 30,
                 ),
                 onPressed: () {
-                  _showConfirmationDialogue(context);
+                  /* _showConfirmationDialogue(context); */
+                  newReservaProvider.confirmarReserva(true);
                 })
             : null,
         /* floatingActionButton: FloatingActionButton(onPressed: (){}), */
