@@ -29,9 +29,18 @@ class CustomApi {
   }
 
   Future<bool> putNewReserva(Reserva reserva) async{
-    debugPrint("IN CUSTOM API putNewReserva: " + reserva.toString());
+    /* debugPrint("IN CUSTOM API putNewReserva: " + reserva.toString()); */
     var response = await netWorkCalls.post(UrlConstants.baseUrl,reserva);
-    debugPrint("RESPONSE CUSTOM API putNewReserva: " + response.toString());
+    /* debugPrint("RESPONSE CUSTOM API putNewReserva: " + response.toString()); */
+    if(response != null){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  Future<bool> deleteReserva(int id) async{
+    var response = await netWorkCalls.delete(UrlConstants.baseUrl+id.toString());
     if(response != null){
       return true;
     }else{

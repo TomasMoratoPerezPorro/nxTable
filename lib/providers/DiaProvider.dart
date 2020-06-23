@@ -40,6 +40,18 @@ class DiaProvider with ChangeNotifier {
     }
   }
 
+  Future<void> deleteReserva(int id)async {
+    try{
+      await api.deleteReserva(id);
+      await new Future.delayed(const Duration(seconds: 1));
+    }catch(ex){
+      debugPrint(ex.toString());
+    }finally{
+      debugPrint("FINALLY");
+      refreshDay();
+    }
+  }
+
   void changeDay(bool direction) async {
     if (direction) {
       _actualDia = _actualDia.add(Duration(hours: 24));

@@ -56,49 +56,7 @@ class _NewReservasPageState extends State<NewReservasPage> {
     });
   }
 
-  void _showConfirmationDialogue(BuildContext context) {
-    final reservaFinal =
-        Provider.of<NewReservaProvider>(context, listen: false).finalReserva;
-    final newReservaProvider =
-        Provider.of<NewReservaProvider>(context, listen: false);
-    final alert = AlertDialog(
-      title: Text("Añadir Reserva:"),
-      content: SingleChildScrollView(
-          child: Column(
-        children: <Widget>[
-          Text("Seguro que deseas añadir al reserva a la base de datos ?"),
-        ],
-      )),
-      /* Text(
-          "Nom: ${reservaFinal.nom} telefon: ${reservaFinal.telefon} torn: ${reservaFinal.torn.toString()} data: ${reservaFinal.getDiaShort()} "), */
-      actions: [
-        FlatButton(
-            child: Text("OK"),
-            onPressed: () {
-              Navigator.pop(context, true);
-            }),
-        FlatButton(
-            child: Text("CANCEL"),
-            onPressed: () {
-              Navigator.pop(context, false);
-            })
-      ],
-    );
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    ).then((confirm) {
-      if (confirm == null) return;
-      if (confirm) {
-        newReservaProvider.confirmarReserva(true);
-      } else {
-        newReservaProvider.confirmarReserva(false);
-      }
-    });
-  }
+  
 
   @override
   Widget build(BuildContext context) {

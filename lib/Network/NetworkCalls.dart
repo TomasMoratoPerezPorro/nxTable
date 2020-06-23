@@ -32,6 +32,14 @@ class NetworkCalls {
     }
   }
 
+  Future<String> delete(String url) async {
+    debugPrint("URL BEFORE SEND:  " + url);
+
+    var response = await client.delete(url);
+    checkAndThrowError(response);
+    return response.body;
+  }
+
   static void checkAndThrowError(Response response) {
     if (response.statusCode != HttpStatus.ok) throw Exception(response.body);
   }
