@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:prototip_tfg/pages/DetailReservaPage.dart';
 import 'package:prototip_tfg/pages/NewReservaPage.dart';
@@ -10,13 +12,17 @@ import 'package:provider/provider.dart';
 import '../global.dart';
 
 class MainPage extends StatelessWidget {
+  GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     final newReservaProvider =
         Provider.of<NewReservaProvider>(context, listen: false);
+
     return Scaffold(
+      key: _drawerKey,
       backgroundColor: bgColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: MainPageAppBarTitle(),
         backgroundColor: mainColor,
         bottom: TabBar(
@@ -56,7 +62,9 @@ class MainPage extends StatelessWidget {
             IconButton(
               color: Colors.white,
               icon: Icon(Icons.menu),
-              onPressed: () {},
+              onPressed: () {
+                _drawerKey.currentState.openDrawer();
+              },
             ),
             IconButton(
               color: Colors.white,
@@ -66,10 +74,72 @@ class MainPage extends StatelessWidget {
           ],
         ),
       ),
+      drawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Row(
+                children: <Widget>[
+                  Icon(
+                    Icons.account_circle,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  UserNameWidget(),
+                ],
+              ),
+              decoration: BoxDecoration(
+                color: mainColor,
+              ),
+            ),
+            Image.asset(
+              'assets/images/nxTable_logo_xxs.png',
+              height: 70,
+              width: 30,
+              fit: BoxFit.fitHeight,
+            ),
+            ListTile(
+              title: Text('Log Out'),
+              onTap: () {
+                FirebaseAuth.instance.signOut();
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: BodyTabBarView(),
       ),
     );
+  }
+}
+
+class UserNameWidget extends StatelessWidget {
+  const UserNameWidget({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    FirebaseUser user = Provider.of<FirebaseUser>(context);
+    return FutureBuilder<DocumentSnapshot>(
+        future:
+            Firestore.instance.collection('Usuaris').document(user.uid).get(),
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+          final DocumentSnapshot doc = snapshot.data;
+          Map<String, dynamic> fields = doc.data;
+          return Text(fields['Name'],
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white));
+        });
   }
 }
 

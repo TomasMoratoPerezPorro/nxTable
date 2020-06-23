@@ -33,6 +33,7 @@ class TaulesGrid extends StatelessWidget {
       return CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
+            leading: Container(),
             backgroundColor: bgColor,
             floating: false,
             pinned: false,
