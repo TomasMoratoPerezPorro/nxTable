@@ -38,7 +38,7 @@ class ReservaConfirmadaWidget extends StatelessWidget {
             case ConnectionState.none:
               return Center(
                 child: Text(
-                  'Fetch chuck joke.',
+                  'No conection',
                   textAlign: TextAlign.center,
                 ),
               );
@@ -52,7 +52,8 @@ class ReservaConfirmadaWidget extends StatelessWidget {
               if (snapshot.hasError) {
                 return Center(child: Text("Error creating reserva"));
               } else {
-                return Center(child: Text("No error"));
+                Navigator.pop(context);
+                return Container(margin:EdgeInsets.only(top:100) ,child: Center(child: CircularProgressIndicator(strokeWidth: 4)));
               }
           }
           return CircularProgressIndicator(strokeWidth: 4);

@@ -5,6 +5,7 @@ import 'package:prototip_tfg/providers/DiaProvider.dart';
 import 'package:prototip_tfg/providers/NewReservaProvider.dart';
 import 'package:prototip_tfg/providers/SeleccioTaulaProvider.dart';
 import 'package:prototip_tfg/providers/ServeiProvider.dart';
+import 'package:prototip_tfg/widgets/mainPageWidgets/DinarTab.dart';
 import 'package:prototip_tfg/widgets/mainPageWidgets/TaulaInfoCardCapacitat.dart';
 import 'package:prototip_tfg/widgets/mainPageWidgets/TaulaInfoCardId.dart';
 import 'package:prototip_tfg/widgets/mainPageWidgets/TaulaInfoCardNom.dart';
@@ -140,9 +141,14 @@ class CustomScrollViewTaules extends StatelessWidget {
 
     final TaulesList _taules =
         Provider.of<SeleccioTaulaProvider>(context, listen: false).taules;
-    if (_taules == null) {
+
+    if (Provider.of<DiaProvider>(context, listen: true).connectionError && _taules==null) {
+      return Center(
+        child: ErrorMessageWidget(),
+      );
+    } else if (_taules == null && Provider.of<DiaProvider>(context, listen: true).connectionError==false) {
       Provider.of<SeleccioTaulaProvider>(context, listen: true).setTaulesList();
-      return CircularProgressIndicator();
+      return SingleChildScrollView(child: Center(child: CircularProgressIndicator()));
     } else {
       return CustomScrollView(
         shrinkWrap: true,

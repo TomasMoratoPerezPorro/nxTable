@@ -9,9 +9,6 @@ import 'package:provider/provider.dart';
 
 import '../global.dart';
 
-
-
-
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -40,11 +37,11 @@ class MainPage extends StatelessWidget {
                 return NewReservasPage();
               },
             ),
-          ).then((result){
+          ).then((result) {
+            if (newReservaProvider.reservaConfirmada) {
+              Provider.of<DiaProvider>(context, listen: false).refreshDay();
+            }
             newReservaProvider.resetData();
-            Provider.of<DiaProvider>(context, listen: false).refreshDay(); 
-            
-
           });
         },
       ),
@@ -76,7 +73,6 @@ class MainPage extends StatelessWidget {
   }
 }
 
-
 class MainPageAppBarTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -100,23 +96,3 @@ class MainPageAppBarTitle extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

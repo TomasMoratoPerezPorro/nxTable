@@ -74,7 +74,10 @@ class TaulaInfoCard extends StatelessWidget {
             }
           },
           onLongPress: () {
-            _showConfirmationDialogue(context,taula);
+            if(taula.isreserva){
+              _showConfirmationDialogue(context,taula);
+            }
+            
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,

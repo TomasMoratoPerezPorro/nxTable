@@ -24,6 +24,7 @@ class _NewReservasPageState extends State<NewReservasPage> {
 
   Widget buildPageView() {
     return PageView(
+      physics: new NeverScrollableScrollPhysics(),
       controller: pageController,
       onPageChanged: (index) {
         pageChanged(index);
@@ -56,8 +57,6 @@ class _NewReservasPageState extends State<NewReservasPage> {
     });
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     final newReservaProvider =
@@ -82,7 +81,6 @@ class _NewReservasPageState extends State<NewReservasPage> {
                   size: 30,
                 ),
                 onPressed: () {
-                  /* _showConfirmationDialogue(context); */
                   newReservaProvider.confirmarReserva(true);
                 })
             : null,
@@ -121,8 +119,9 @@ class _NewReservasPageState extends State<NewReservasPage> {
                           onTap: () {
                             if (bottomSelectedIndex < 3) {
                               if (newReservaProvider
-                                  .canProceed(bottomSelectedIndex))
+                                  .canProceed(bottomSelectedIndex)) {
                                 bottomTapped(bottomSelectedIndex + 1);
+                              } 
                             }
                           },
                           child: Icon(Icons.arrow_forward,

@@ -9,9 +9,13 @@ class DiaProvider with ChangeNotifier {
     _getReservasDia();
   }
   bool _isLoading = false;
+  bool _connectionError = false;
+  String _errorMessage;
   dynamic _reservasDia;
   CustomApi api = CustomApi();
 
+  bool get connectionError => _connectionError;
+  String get errorMessage => _errorMessage;
   DateTime get actualDia => _actualDia;
   dynamic get reservasDia => _reservasDia;
   bool get isLoading => _isLoading;
@@ -32,6 +36,8 @@ class DiaProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       debugPrint(ex.toString());
+      _connectionError = true;
+      _errorMessage = ex.toString();
       debugPrint("catch EXCEPTION _reservasDia = null");
     } finally {
       _isLoading = false;
