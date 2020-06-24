@@ -18,9 +18,10 @@ class NewReservaConfirmationStep extends StatelessWidget {
       child: Column(
         children: <Widget>[
           TopInfoBar(text: "Confirma la información: "),
-          newReservaProvider.reservaConfirmada
+          DetailsWidget(reserva: reserva),
+          /* newReservaProvider.reservaConfirmada
               ? ReservaConfirmadaWidget()
-              : DetailsWidget(reserva: reserva),
+              : DetailsWidget(reserva: reserva), */
         ],
       ),
     );

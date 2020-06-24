@@ -72,7 +72,7 @@ class DiaProvider with ChangeNotifier {
     }
   }
 
-  void refreshDay() async {
+  Future<void> refreshDay() async {
     await _getReservasDia();
     notifyListeners();
   }

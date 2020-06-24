@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prototip_tfg/pages/NewReservaConfirmationStep.dart';
 import 'package:prototip_tfg/pages/NewReservaSecondStep.dart';
 import 'package:prototip_tfg/pages/NewReservaThirdStep.dart';
+import 'package:prototip_tfg/providers/DiaProvider.dart';
 import 'package:prototip_tfg/providers/NewReservaProvider.dart';
 import 'package:prototip_tfg/providers/SeleccioTaulaProvider.dart';
 import 'package:prototip_tfg/widgets/newReservaPageWidgets/NewReservaFirstStep/NewReservaFirstStep.dart';
@@ -80,8 +81,11 @@ class _NewReservasPageState extends State<NewReservasPage> {
                   Icons.check,
                   size: 30,
                 ),
-                onPressed: () {
-                  newReservaProvider.confirmarReserva(true);
+                onPressed: () async {
+                  await newReservaProvider.saveReserva();
+                  await Provider.of<DiaProvider>(context, listen:false).refreshDay();
+                  Navigator.pop(context);
+                  /* newReservaProvider.confirmarReserva(true); */
                 })
             : null,
         /* floatingActionButton: FloatingActionButton(onPressed: (){}), */

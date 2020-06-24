@@ -78,8 +78,17 @@ class TaulesGrid extends StatelessWidget {
                             style: TextStyle(fontSize: 16),
                           ),
                           onPressed: () {
-                            Provider.of<ServeiProvider>(context, listen: false)
-                                .changeTaulesList(2);
+                            if (Provider.of<ServeiProvider>(context,
+                                        listen: false)
+                                    .servei ==
+                                1) {
+                              null;
+                            } else {
+                              Provider.of<ServeiProvider>(context,
+                                      listen: false)
+                                  .changeTaulesList(2);
+                            }
+                            
                           },
                         ),
                       ),

@@ -21,6 +21,9 @@ class NewReservaProvider with ChangeNotifier {
   CustomApi api = CustomApi();
 
   Future<bool> saveReserva() async {
+    if(_finalReserva.servei==2){
+      _finalReserva.torn+=1;
+    }
     try {
       var stats = await api.putNewReserva(_finalReserva);
       return true;
