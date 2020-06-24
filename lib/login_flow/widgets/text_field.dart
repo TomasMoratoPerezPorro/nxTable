@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../global.dart';
+
 enum SignInTextFieldType { email, password, userName, pis }
 
-final Color mainColor = Color(0xFFff7f5c);
-final Color secondaryColor = Color(0xFFfff7f5);
+
 
 class SignInTextField extends StatefulWidget {
   final SignInTextFieldType type;
@@ -35,6 +36,9 @@ class _SignInTextFieldState extends State<SignInTextField> {
       return TextFormField(
         controller: widget.controller,
         decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.red, width: 5.0),
+          ),
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(

@@ -96,18 +96,20 @@ class MainPage extends StatelessWidget {
                 color: mainColor,
               ),
             ),
-            Image.asset(
-              'assets/images/nxTable_logo_xxs.png',
-              height: 70,
-              width: 30,
-              fit: BoxFit.fitHeight,
-            ),
+            
             ListTile(
               title: Text('Log Out'),
               onTap: () {
                 FirebaseAuth.instance.signOut();
                 Navigator.pop(context);
               },
+            ),
+            SizedBox(height: 300,),
+            Image.asset(
+              'assets/images/nxTable_logo_xxs.png',
+              height: 70,
+              width: 30,
+              fit: BoxFit.fitHeight,
             ),
           ],
         ),

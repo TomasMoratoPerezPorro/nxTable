@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-final Color mainColor = Color(0xFFff7f5c);
-final Color secondaryColor = Color(0xFFfff7f5);
+
+import '../../global.dart';
+
 
 class AuthPageTitle extends StatelessWidget {
   final String text;

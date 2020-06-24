@@ -1,23 +1,17 @@
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:prototip_tfg/Models/DatabaseService.dart';
 import 'package:prototip_tfg/login_flow/auth_state_switch.dart';
-
 import 'package:prototip_tfg/login_flow/pages/signup_page.dart';
-import 'package:prototip_tfg/login_flow/widgets/auth_page_title.dart';
 import 'package:prototip_tfg/login_flow/widgets/button_sign_in.dart';
 import 'package:prototip_tfg/login_flow/widgets/button_sign_in_with.dart';
 import 'package:prototip_tfg/login_flow/widgets/or_bar.dart';
 import 'package:prototip_tfg/login_flow/widgets/text_field.dart';
-
 import 'package:provider/provider.dart';
 
-final Color mainColor = Color(0xFFff7f5c);
-final Color secondaryColor = Color(0xFFfff7f5);
+import '../../global.dart';
 
 class SignInPage extends StatelessWidget {
   @override
@@ -137,113 +131,129 @@ class _SignInPageBodyState extends State<_SignInPageBody> {
   void _createUserWithEmailAndPassword(EmailAndPassword credentials) async {
     try {
       showLoading(true);
-      AuthResult result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      AuthResult result =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: credentials.email,
         password: credentials.password,
       );
       FirebaseUser user = result.user;
-      await DatabaseService(uid: user.uid).updateUserData(credentials.getterUserName);
+      await DatabaseService(uid: user.uid)
+          .updateUserData(credentials.getterUserName);
     } on PlatformException catch (e) {
       _showError(e);
     } finally {
       showLoading(false);
     }
   }
-      
-        @override
-        Widget build(BuildContext context) {
-          if (_showLoading) {
-            return Center(child: CircularProgressIndicator());
-          }
-          final SignInConfig config = Provider.of<SignInConfig>(context);
-        //  final primaryColor = Theme.of(context).primaryColor;
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: Form(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+
+  @override
+  Widget build(BuildContext context) {
+    if (_showLoading) {
+      return Container(
+        constraints: BoxConstraints.expand(),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/loginscreen.png"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+    final SignInConfig config = Provider.of<SignInConfig>(context);
+    //  final primaryColor = Theme.of(context).primaryColor;
+    return Container(
+      constraints: BoxConstraints.expand(),
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/loginscreen.png"),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+          child: Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                SizedBox(height: 240),
+                SizedBox(height: 24),
+                SignInTextField(SignInTextFieldType.email, _ctrlEmail),
+                SizedBox(height: 16),
+                SignInTextField(SignInTextFieldType.password, _ctrlPassword),
+                SizedBox(height: 32),
+                SignInButton(
+                  color: mainColor,
+                  onPressed:
+                      signButtonActive ? _signInWithEmailAndPassword : null,
+                ),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: 120),
-                    AuthPageTitle('Sign In'),
-                    SizedBox(height: 24),
-                    SignInTextField(SignInTextFieldType.email, _ctrlEmail),
-                    SizedBox(height: 16),
-                    SignInTextField(SignInTextFieldType.password, _ctrlPassword),
-                    SizedBox(height: 32),
-                    
-                    SignInButton(
-                      color: mainColor,
-                      onPressed:
-                          signButtonActive ? _signInWithEmailAndPassword : null,
-                    ),
-                    SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Need an account?',
-                          style: TextStyle(
-                            color: Colors.black45,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                        FlatButton(
-                          child: Text('Sign Up'),
-                          textColor: mainColor,
-                          onPressed: () async {
-                            EmailAndPassword result =
-                                await Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => SignUpPage()),
-                            );
-                            if (result != null) {
-                              _createUserWithEmailAndPassword(result);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    if (config.withFacebook || config.withGoogle) ...[
-                      OrBar(spaceTop: 12, spaceBottom: 24),
-                      Row(
-                        children: <Widget>[
-                          if (config.withGoogle)
-                            Expanded(
-                              child: SignInWithButton(
-                                'Google',
-                                FontAwesomeIcons.google,
-                              ),
-                            ),
-                          if (config.withFacebook && config.withGoogle)
-                            SizedBox(width: 16),
-                          if (config.withFacebook)
-                            Expanded(
-                              child: SignInWithButton(
-                                'Facebook',
-                                FontAwesomeIcons.facebook,
-                              ),
-                            ),
-                        ],
+                    Text(
+                      'Need an account?',
+                      style: TextStyle(
+                        color: Colors.black45,
+                        fontStyle: FontStyle.italic,
                       ),
-                    ],
-                    if (config.anonymously) ...[
-                      Spacer(),
-                      FlatButton(
-                        child: Text(
-                          'Sign in anonymously',
-                          style: TextStyle(color: mainColor),
-                        ),
-                        onPressed: _signInAnonymously,
-                      ),
-                      SizedBox(height: 20),
-                    ]
+                    ),
+                    SizedBox(width: 16),
+                    FlatButton(
+                      child: Text('Sign Up'),
+                      textColor: mainColor,
+                      onPressed: () async {
+                        EmailAndPassword result =
+                            await Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => SignUpPage()),
+                        );
+                        if (result != null) {
+                          _createUserWithEmailAndPassword(result);
+                        }
+                      },
+                    ),
                   ],
                 ),
-              ),
+                if (config.withFacebook || config.withGoogle) ...[
+                  OrBar(spaceTop: 12, spaceBottom: 24),
+                  Row(
+                    children: <Widget>[
+                      if (config.withGoogle)
+                        Expanded(
+                          child: SignInWithButton(
+                            'Google',
+                            FontAwesomeIcons.google,
+                          ),
+                        ),
+                      if (config.withFacebook && config.withGoogle)
+                        SizedBox(width: 16),
+                      if (config.withFacebook)
+                        Expanded(
+                          child: SignInWithButton(
+                            'Facebook',
+                            FontAwesomeIcons.facebook,
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+                if (config.anonymously) ...[
+                  Spacer(),
+                  FlatButton(
+                    child: Text(
+                      'Sign in anonymously',
+                      style: TextStyle(color: mainColor),
+                    ),
+                    onPressed: _signInAnonymously,
+                  ),
+                  SizedBox(height: 20),
+                ]
+              ],
             ),
-          );
-        }
-      }
-      
-     
+          ),
+        ),
+      ),
+    );
+  }
+}
