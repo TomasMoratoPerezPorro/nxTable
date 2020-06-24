@@ -17,7 +17,8 @@ class App extends StatelessWidget {
             create: (context) => NewReservaProvider()),
       ],
       child: MaterialApp(
-        home: Nxtable(),
+        title: 'NxTable',
+        home: DefaultTabController(length: 2, child: MainPage()),
       ),
     );
   }

@@ -132,7 +132,9 @@ class UserNameWidget extends StatelessWidget {
             Firestore.instance.collection('Usuaris').document(user.uid).get(),
         builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+                child: SizedBox(
+                    height: 15, width: 15, child: CircularProgressIndicator()));
           }
           final DocumentSnapshot doc = snapshot.data;
           Map<String, dynamic> fields = doc.data;
