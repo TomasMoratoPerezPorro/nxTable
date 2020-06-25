@@ -29,6 +29,7 @@ class DiaProvider with ChangeNotifier {
       debugPrint(stats.toString());
       await new Future.delayed(const Duration(seconds: 1));
       _isLoading = false;
+      _connectionError = false;
       debugPrint(_isLoading.toString());
       notifyListeners();
     } catch (ex) {
@@ -46,13 +47,13 @@ class DiaProvider with ChangeNotifier {
     }
   }
 
-  Future<void> deleteReserva(int id)async {
-    try{
+  Future<void> deleteReserva(int id) async {
+    try {
       await api.deleteReserva(id);
       await new Future.delayed(const Duration(seconds: 1));
-    }catch(ex){
+    } catch (ex) {
       debugPrint(ex.toString());
-    }finally{
+    } finally {
       debugPrint("FINALLY");
       refreshDay();
     }
@@ -66,6 +67,15 @@ class DiaProvider with ChangeNotifier {
       notifyListeners();
     } else {
       _actualDia = _actualDia.add(Duration(hours: -24));
+      //debugPrint(_actualDia.toString());
+      await _getReservasDia();
+      notifyListeners();
+    }
+  }
+
+  void setDay(DateTime date) async {
+    if (date != _actualDia) {
+      _actualDia = date;
       //debugPrint(_actualDia.toString());
       await _getReservasDia();
       notifyListeners();

@@ -12,11 +12,35 @@ import 'package:provider/provider.dart';
 import '../global.dart';
 
 class MainPage extends StatelessWidget {
+
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     final newReservaProvider =
         Provider.of<NewReservaProvider>(context, listen: false);
+    final diaProvider =  Provider.of<DiaProvider>(context, listen: false);
+    _pickDate() async {
+      DateTime date = await showDatePicker(
+        context: context,
+        firstDate: DateTime(DateTime.now().year - 5),
+        lastDate: DateTime(DateTime.now().year + 5),
+        initialDate: diaProvider.actualDia,
+        builder: (BuildContext context, Widget child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              primaryColor: mainColor, //Head background
+              accentColor: mainColor, //selection color
+              //dialogBackgroundColor: Colors.white,//Background color
+              colorScheme: ColorScheme.light(primary: mainColor),
+              buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            ),
+            child: child,
+          );
+        },
+      );
+
+      if (date != null) diaProvider.setDay(date);
+    }
 
     return Scaffold(
       key: _drawerKey,
@@ -69,7 +93,7 @@ class MainPage extends StatelessWidget {
             IconButton(
               color: Colors.white,
               icon: Icon(Icons.calendar_today),
-              onPressed: () {},
+              onPressed: _pickDate,
             ),
           ],
         ),
