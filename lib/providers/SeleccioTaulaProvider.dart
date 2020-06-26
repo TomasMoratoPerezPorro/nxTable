@@ -42,6 +42,7 @@ class SeleccioTaulaProvider with ChangeNotifier {
   dynamic get reservasDia => _reservasDia;
   int get actualTorn => _actualTorn;
 
+
   void update(NewReservaProvider newReservaProviderProvider)  {
     if(_actualDia != newReservaProviderProvider.actualDia || _actualServei !=newReservaProviderProvider.servei){
       _actualDia = newReservaProviderProvider.actualDia;
@@ -53,15 +54,16 @@ class SeleccioTaulaProvider with ChangeNotifier {
       _actualTorn = 1;
     }
     _taules=null;
-    getReservasDia();
+    /* getReservasDia(); */
      notifyListeners(); 
     }
+
     
   }
 
-  Future<ReservasDia> getReservasDia() async {
+  Future<ReservasDia> getReservasDia(DateTime data) async {
     try {
-      var stats = await api.getReservasDia(_actualDia);
+      var stats = await api.getReservasDia(data);
       _reservasDia = stats;
        await new Future.delayed(const Duration(seconds: 1)); 
       /* notifyListeners(); */

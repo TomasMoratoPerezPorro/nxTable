@@ -75,14 +75,14 @@ class Reserva {
 
   String getDia() {
     var dt = this.dia;
-    var newFormat = DateFormat("EEEE, dd MMMM");
+    var newFormat = DateFormat("EEEE, dd MMMM","es_ES");
     String updatedDt = newFormat.format(dt);
     return updatedDt;
   }
 
   String getDiaShort() {
     var dt = this.dia;
-    var newFormat = DateFormat("yyyy-MM-dd");
+    var newFormat = DateFormat("yyyy-MM-dd","es_ES");
     String updatedDt = newFormat.format(dt);
     return updatedDt;
   }

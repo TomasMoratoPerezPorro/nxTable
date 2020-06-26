@@ -9,8 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   provider: ^4.0.5
-  intl: ^0.16.1
+  intl: ^0.16.0
   http: ^0.12.1
   flutter_calendar_carousel: ^1.4.12
   intl_phone_number_input: ^0.4.5

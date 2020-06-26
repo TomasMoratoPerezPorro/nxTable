@@ -89,7 +89,7 @@ class DiaProvider with ChangeNotifier {
 
   String getDia() {
     var dt = _actualDia;
-    var newFormat = DateFormat("EEEE, dd MMMM");
+    var newFormat = DateFormat("EEEE, dd MMMM",'es_ES');
     String updatedDt = newFormat.format(dt);
     return updatedDt;
   }

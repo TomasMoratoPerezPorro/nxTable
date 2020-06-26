@@ -44,7 +44,8 @@ class TaulesGridAddReserva extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final seleccioTaulaProvider =
-        Provider.of<SeleccioTaulaProvider>(context, listen: false);
+        Provider.of<SeleccioTaulaProvider>(context, listen: true);
+    
     return seleccioTaulaProvider.reservasDia == null
         ? CircularProgressIndicator(strokeWidth: 4)
         : CustomScrollViewTaules();
@@ -142,13 +143,19 @@ class CustomScrollViewTaules extends StatelessWidget {
     final TaulesList _taules =
         Provider.of<SeleccioTaulaProvider>(context, listen: false).taules;
 
-    if (Provider.of<DiaProvider>(context, listen: true).connectionError && _taules==null) {
+    if (Provider.of<DiaProvider>(context, listen: true).connectionError &&
+        _taules == null) {
       return Center(
         child: ErrorMessageWidget(),
       );
-    } else if (_taules == null && Provider.of<DiaProvider>(context, listen: true).connectionError==false) {
+    } else if (_taules == null &&
+        Provider.of<DiaProvider>(context, listen: true).connectionError ==
+            false) {
       Provider.of<SeleccioTaulaProvider>(context, listen: true).setTaulesList();
-      return SingleChildScrollView(child: Center(child: CircularProgressIndicator()));
+      return SingleChildScrollView(
+          child: Center(
+              child: Container(
+                  width: 40, height: 40, child: CircularProgressIndicator())));
     } else {
       return CustomScrollView(
         shrinkWrap: true,

@@ -8,7 +8,7 @@ import 'package:http/http.dart';
 
 class NetworkCalls {
   Future<String> get(String url) async {
-    var response = await client.get(url).timeout(Duration(seconds: 5));
+    var response = await client.get(url).timeout(Duration(seconds: 10));
     checkAndThrowError(response);
     return response.body;
   }

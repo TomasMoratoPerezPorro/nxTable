@@ -116,7 +116,7 @@ class ComentarisReservaCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Comentaris:  ",
+                  "Comentarios:  ",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 10),

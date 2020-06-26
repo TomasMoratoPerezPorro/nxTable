@@ -4,13 +4,13 @@ import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:intl/intl.dart';
 import 'package:prototip_tfg/providers/NewReservaProvider.dart';
+import 'package:prototip_tfg/providers/SeleccioTaulaProvider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../global.dart';
 
 class CalendarCard extends StatefulWidget {
   CalendarCard({Key key, this.title}) : super(key: key);
-
 
   final String title;
 
@@ -66,6 +66,13 @@ class _CalendarCardState extends State<CalendarCard> {
 
   @override
   void initState() {
+    if (Provider.of<SeleccioTaulaProvider>(context, listen: false)
+            .reservasDia ==
+        null) {
+      Provider.of<SeleccioTaulaProvider>(context, listen: false)
+          .getReservasDia(DateTime.now());
+    }
+
     /// Add more events to _markedDateMap EventList
     _markedDateMap.add(
         new DateTime(2019, 2, 25),
@@ -120,10 +127,14 @@ class _CalendarCardState extends State<CalendarCard> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime _currentDate2 = Provider.of<NewReservaProvider>(context, listen: false).actualDia;
-    
+    DateTime _currentDate2 =
+        Provider.of<NewReservaProvider>(context, listen: false).actualDia;
+
     void setDia(DateTime currentDate2) {
-      Provider.of<NewReservaProvider>(context, listen: false).setDia(_currentDate2);
+      Provider.of<NewReservaProvider>(context, listen: false)
+          .setDia(_currentDate2);
+      Provider.of<SeleccioTaulaProvider>(context, listen: false)
+          .getReservasDia(_currentDate2);
     }
 
     /// Example with custom icon
@@ -132,94 +143,91 @@ class _CalendarCardState extends State<CalendarCard> {
         this.setState(() => _currentDate2 = date);
         events.forEach((event) => print(event.title));
         setDia(_currentDate2);
-                /* newReservaProvider._setDia(_currentDate2); */
-        
-              },
-              weekendTextStyle: TextStyle(
-                color: Colors.grey,
+        /* newReservaProvider._setDia(_currentDate2); */
+      },
+      weekendTextStyle: TextStyle(
+        color: Colors.grey,
+      ),
+      thisMonthDayBorderColor: Colors.grey,
+      //          weekDays: null, /// for pass null when you do not want to render weekDays
+      headerText: _currentMonth,
+      //          markedDates: _markedDate,
+      weekFormat: false,
+      markedDatesMap: _markedDateMap,
+      height: 400,
+      selectedDateTime: _currentDate2,
+      showIconBehindDayText: true,
+      //          daysHaveCircularBorder: false, /// null for not rendering any border, true for circular border, false for rectangular border
+      customGridViewPhysics: NeverScrollableScrollPhysics(),
+      markedDateShowIcon: true,
+      markedDateIconMaxShown: 2,
+      selectedDayTextStyle: TextStyle(
+        color: Colors.white,
+      ),
+      todayTextStyle: TextStyle(
+        color: Colors.blue,
+      ),
+      markedDateIconBuilder: (event) {
+        return event.icon;
+      },
+      minSelectedDate: _currentDate.subtract(Duration(days: 360)),
+      maxSelectedDate: _currentDate.add(Duration(days: 360)),
+      todayButtonColor: Colors.transparent,
+      todayBorderColor: Colors.green,
+      firstDayOfWeek: 1,
+      weekdayTextStyle: TextStyle(fontSize: 14.0, color: Colors.grey[300]),
+      selectedDayButtonColor: actionColor,
+      onCalendarChanged: (DateTime date) {
+        this.setState(() => _currentMonth = DateFormat.yMMM().format(date));
+      },
+
+      markedDateMoreShowTotal:
+          false, // null for not showing hidden events indicator
+      //          markedDateIconMargin: 9,
+      //          markedDateIconOffset: 3,
+    );
+
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: SizedBox(
+        width: double.infinity,
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  "Selecciona una fecha:",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
-              thisMonthDayBorderColor: Colors.grey,
-              //          weekDays: null, /// for pass null when you do not want to render weekDays
-              headerText: _currentMonth,
-              //          markedDates: _markedDate,
-              weekFormat: false,
-              markedDatesMap: _markedDateMap,
-              height: 400,
-              selectedDateTime: _currentDate2,
-              showIconBehindDayText: true,
-              //          daysHaveCircularBorder: false, /// null for not rendering any border, true for circular border, false for rectangular border
-              customGridViewPhysics: NeverScrollableScrollPhysics(),
-              markedDateShowIcon: true,
-              markedDateIconMaxShown: 2,
-              selectedDayTextStyle: TextStyle(
-                color: Colors.white,
-              ),
-              todayTextStyle: TextStyle(
-                color: Colors.blue,
-              ),
-              markedDateIconBuilder: (event) {
-                return event.icon;
-              },
-              minSelectedDate: _currentDate.subtract(Duration(days: 360)),
-              maxSelectedDate: _currentDate.add(Duration(days: 360)),
-              todayButtonColor: Colors.transparent,
-              todayBorderColor: Colors.green,
-              firstDayOfWeek: 1,
-              weekdayTextStyle: TextStyle(fontSize: 14.0, color: Colors.grey[300]),
-              selectedDayButtonColor: actionColor,
-              onCalendarChanged: (DateTime date) {
-                this.setState(() => _currentMonth = DateFormat.yMMM().format(date));
-              },
-        
-              markedDateMoreShowTotal:
-                  false, // null for not showing hidden events indicator
-              //          markedDateIconMargin: 9,
-              //          markedDateIconOffset: 3,
-            );
-        
-            return Padding(
-              padding: const EdgeInsets.all(8),
-              child: SizedBox(
+              SizedBox(height: 15),
+              Container(
+                height: 40,
                 width: double.infinity,
-                child: Card(
-                  shape:
-                      RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          "Selecciona una fecha:",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      SizedBox(height: 15),
-                      Container(
-                        height: 40,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: actionColor,
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                        ),
-                        child: Center(
-                          child: Text(
-                            Provider.of<NewReservaProvider>(context, listen: true)
-                                .getDia(),
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        child: _calendarCarousel,
-                      )
-                    ],
+                decoration: BoxDecoration(
+                  color: actionColor,
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                ),
+                child: Center(
+                  child: Text(
+                    Provider.of<NewReservaProvider>(context, listen: true)
+                        .getDia(),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
-            );
-          }
-        
-          
+              Container(
+                child: _calendarCarousel,
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

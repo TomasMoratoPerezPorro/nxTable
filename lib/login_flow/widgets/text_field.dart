@@ -20,7 +20,7 @@ class _SignInTextFieldState extends State<SignInTextField> {
 
   get isPassword => widget.type == SignInTextFieldType.password;
   get isUser => widget.type == SignInTextFieldType.userName;
-  get isPis => widget.type == SignInTextFieldType.pis;
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class _SignInTextFieldState extends State<SignInTextField> {
         controller: widget.controller,
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.red, width: 5.0),
+            borderSide: BorderSide(color: mainColor, width: 5.0),
           ),
           filled: true,
           fillColor: Colors.white,
@@ -52,24 +52,7 @@ class _SignInTextFieldState extends State<SignInTextField> {
             isPassword ? TextInputType.text : TextInputType.emailAddress,
         obscureText: isPassword && !_viewPassword,
       );
-    } else if (isPis) {
-      return TextFormField(
-        controller: widget.controller,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          border: OutlineInputBorder(
-            borderSide: BorderSide(color: mainColor, width: 5.0),
-          ),
-          hintText: 'Pis',
-          hintStyle: TextStyle(color: Colors.grey[400]),
-          suffixIcon: eye,
-        ),
-        keyboardType:
-            isPassword ? TextInputType.text : TextInputType.emailAddress,
-        obscureText: isPassword && !_viewPassword,
-      );
-    }
+    } 
     return TextFormField(
       controller: widget.controller,
       decoration: InputDecoration(

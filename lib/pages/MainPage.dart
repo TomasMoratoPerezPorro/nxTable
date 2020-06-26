@@ -22,6 +22,7 @@ class MainPage extends StatelessWidget {
     _pickDate() async {
       DateTime date = await showDatePicker(
         context: context,
+        locale: const Locale('es', 'ES'),
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5),
         initialDate: diaProvider.actualDia,

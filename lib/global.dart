@@ -15,6 +15,6 @@ final netWorkCalls = NetworkCalls();
 
 
 abstract class UrlConstants {
-  /* static const String baseUrl = 'http://10.0.2.2:3000/reservas/'; */
-  static const String baseUrl = 'https://nxtable.herokuapp.com/reservas/';
+  static const String baseUrl = 'http://10.0.2.2:3000/reservas/';  
+  /* static const String baseUrl = 'https://nxtable.herokuapp.com/reservas/'; */
 }

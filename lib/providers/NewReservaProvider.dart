@@ -21,8 +21,8 @@ class NewReservaProvider with ChangeNotifier {
   CustomApi api = CustomApi();
 
   Future<bool> saveReserva() async {
-    if(_finalReserva.servei==2){
-      _finalReserva.torn+=1;
+    if (_finalReserva.servei == 2) {
+      _finalReserva.torn += 1;
     }
     try {
       var stats = await api.putNewReserva(_finalReserva);
@@ -181,8 +181,7 @@ class NewReservaProvider with ChangeNotifier {
     this._idTaula = [];
     this._numComensalesSelected = 0;
     this._reservaConfirmada = false;
-    this._finalReserva=null;
-    
+    this._finalReserva = null;
   }
 
   void resetDataStep2() {
