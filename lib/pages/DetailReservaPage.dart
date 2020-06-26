@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prototip_tfg/Models/Reserva.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 import '../global.dart';
 
@@ -53,39 +54,44 @@ class DetailsWidget extends StatelessWidget {
           ComentarisReservaCard(),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Container(
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: actionColor,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.zero,
-                        bottomLeft: Radius.circular(10),
-                        bottomRight: Radius.zero,
+            child: InkWell(
+              onLongPress: () {
+                UrlLauncher.launch("tel://${reserva.telefon}");
+              },
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Container(
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: actionColor,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.zero,
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.zero,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Icon(
+                          Icons.call,
+                          size: 18,
+                        ),
                       ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Icon(
-                        Icons.call,
-                        size: 18,
-                      ),
+                    SizedBox(width: 15),
+                    Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: Text(reserva.telefon),
                     ),
-                  ),
-                  SizedBox(width: 15),
-                  Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: Text(reserva.telefon),
-                  ),
-                  SizedBox(width: 15),
-                ],
+                    SizedBox(width: 15),
+                  ],
+                ),
               ),
             ),
           ),
