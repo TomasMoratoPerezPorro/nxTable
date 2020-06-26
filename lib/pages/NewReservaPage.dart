@@ -5,6 +5,7 @@ import 'package:prototip_tfg/pages/NewReservaThirdStep.dart';
 import 'package:prototip_tfg/providers/DiaProvider.dart';
 import 'package:prototip_tfg/providers/NewReservaProvider.dart';
 import 'package:prototip_tfg/providers/SeleccioTaulaProvider.dart';
+import 'package:prototip_tfg/widgets/newReservaPageWidgets/Dialogs.dart';
 import 'package:prototip_tfg/widgets/newReservaPageWidgets/NewReservaFirstStep/NewReservaFirstStep.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +23,8 @@ class _NewReservasPageState extends State<NewReservasPage> {
     initialPage: 0,
     keepPage: false,
   );
+
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   Widget buildPageView() {
     return PageView(
@@ -58,6 +61,22 @@ class _NewReservasPageState extends State<NewReservasPage> {
     });
   }
 
+  Future<void> _handleSubmit(BuildContext context) async {
+    final newReservaProvider =
+        Provider.of<NewReservaProvider>(context, listen: false);
+    try {
+      Dialogs.showLoadingDialog(context, _keyLoader);
+      await newReservaProvider.saveReserva();
+      await Provider.of<DiaProvider>(context, listen: false).refreshDay();
+      Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+          .pop(); //close the dialoge
+      Navigator.pop(context);
+      /* Navigator.pushReplacementNamed(context, "/home"); */
+    } catch (error) {
+      print(error);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final newReservaProvider =
@@ -81,12 +100,7 @@ class _NewReservasPageState extends State<NewReservasPage> {
                   Icons.check,
                   size: 30,
                 ),
-                onPressed: () async {
-                  await newReservaProvider.saveReserva();
-                  await Provider.of<DiaProvider>(context, listen:false).refreshDay();
-                  Navigator.pop(context);
-                  /* newReservaProvider.confirmarReserva(true); */
-                })
+                onPressed: () => _handleSubmit(context))
             : null,
         /* floatingActionButton: FloatingActionButton(onPressed: (){}), */
         bottomNavigationBar: BottomAppBar(
@@ -125,7 +139,7 @@ class _NewReservasPageState extends State<NewReservasPage> {
                               if (newReservaProvider
                                   .canProceed(bottomSelectedIndex)) {
                                 bottomTapped(bottomSelectedIndex + 1);
-                              } 
+                              }
                             }
                           },
                           child: Icon(Icons.arrow_forward,
