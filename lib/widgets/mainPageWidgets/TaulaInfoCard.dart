@@ -21,8 +21,6 @@ class TaulaInfoCard extends StatelessWidget {
           Text("Seguro que deseas eliminar esta reserva ?"),
         ],
       )),
-      /* Text(
-          "Nom: ${reservaFinal.nom} telefon: ${reservaFinal.telefon} torn: ${reservaFinal.torn.toString()} data: ${reservaFinal.getDiaShort()} "), */
       actions: [
         FlatButton(
             child: Text("OK"),
@@ -74,10 +72,9 @@ class TaulaInfoCard extends StatelessWidget {
             }
           },
           onLongPress: () {
-            if(taula.isreserva){
-              _showConfirmationDialogue(context,taula);
+            if (taula.isreserva) {
+              _showConfirmationDialogue(context, taula);
             }
-            
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
