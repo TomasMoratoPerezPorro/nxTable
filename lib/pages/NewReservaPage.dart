@@ -89,7 +89,7 @@ class _NewReservasPageState extends State<NewReservasPage> {
       child: Scaffold(
         backgroundColor: bgColor,
         appBar: AppBar(
-          title: Text('New Reserva'),
+          title: Text('Nueva Reserva'),
           backgroundColor: mainColor,
         ),
         floatingActionButton: bottomSelectedIndex == 3
