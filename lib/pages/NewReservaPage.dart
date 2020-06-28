@@ -105,16 +105,18 @@ class _NewReservasPageState extends State<NewReservasPage> {
         /* floatingActionButton: FloatingActionButton(onPressed: (){}), */
         bottomNavigationBar: BottomAppBar(
             color: mainColor,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  bottomSelectedIndex == 0
-                      ? SizedBox(
-                          height: 35,
-                        )
-                      : InkWell(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                bottomSelectedIndex == 0
+                    ? SizedBox(
+                        height: 35,
+                      )
+                    : Container(
+                        height: 50,
+                        width: 50,
+                        child: InkWell(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
                           onTap: () {
                             if (bottomSelectedIndex > 0) {
                               if (bottomSelectedIndex == 1) {
@@ -126,14 +128,19 @@ class _NewReservasPageState extends State<NewReservasPage> {
                           child: Icon(Icons.arrow_back,
                               size: 25, color: Colors.white),
                         ),
-                  SizedBox(
-                    height: 35,
-                  ),
-                  bottomSelectedIndex == 3
-                      ? SizedBox(
-                          height: 35,
-                        )
-                      : InkWell(
+                      ),
+                SizedBox(
+                  height: 35,
+                ),
+                bottomSelectedIndex == 3
+                    ? SizedBox(
+                        height: 35,
+                      )
+                    : Container(
+                        height: 50,
+                        width: 50,
+                        child: InkWell(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
                           onTap: () {
                             if (bottomSelectedIndex < 3) {
                               if (newReservaProvider
@@ -145,8 +152,8 @@ class _NewReservasPageState extends State<NewReservasPage> {
                           child: Icon(Icons.arrow_forward,
                               size: 25, color: Colors.white),
                         ),
-                ],
-              ),
+                      ),
+              ],
             )),
         body: buildPageView(),
       ),

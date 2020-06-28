@@ -12,13 +12,12 @@ import 'package:provider/provider.dart';
 import '../global.dart';
 
 class MainPage extends StatelessWidget {
-
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     final newReservaProvider =
         Provider.of<NewReservaProvider>(context, listen: false);
-    final diaProvider =  Provider.of<DiaProvider>(context, listen: false);
+    final diaProvider = Provider.of<DiaProvider>(context, listen: false);
     _pickDate() async {
       DateTime date = await showDatePicker(
         context: context,
@@ -121,7 +120,6 @@ class MainPage extends StatelessWidget {
                 color: mainColor,
               ),
             ),
-            
             ListTile(
               title: Text('Log Out'),
               onTap: () {
@@ -129,7 +127,9 @@ class MainPage extends StatelessWidget {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: 300,),
+            SizedBox(
+              height: 300,
+            ),
             Image.asset(
               'assets/images/nxTable_logo_xxs.png',
               height: 70,
@@ -178,18 +178,28 @@ class MainPageAppBarTitle extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        InkWell(
-          onTap: () {
-            Provider.of<DiaProvider>(context, listen: false).changeDay(false);
-          },
-          child: Icon(Icons.arrow_back),
+        Container(
+          height: 60,
+          width: 50,
+          child: InkWell(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            onTap: () {
+              Provider.of<DiaProvider>(context, listen: false).changeDay(false);
+            },
+            child: Icon(Icons.arrow_back),
+          ),
         ),
         Text(Provider.of<DiaProvider>(context, listen: true).getDia()),
-        InkWell(
-          onTap: () {
-            Provider.of<DiaProvider>(context, listen: false).changeDay(true);
-          },
-          child: Icon(Icons.arrow_forward),
+        Container(
+          height: 60,
+          width: 50,
+          child: InkWell(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            onTap: () {
+              Provider.of<DiaProvider>(context, listen: false).changeDay(true);
+            },
+            child: Icon(Icons.arrow_forward),
+          ),
         ),
       ],
     );
