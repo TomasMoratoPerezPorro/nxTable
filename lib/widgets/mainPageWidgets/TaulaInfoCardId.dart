@@ -29,7 +29,7 @@ class TaulaInfoCardId extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Text(
-                  'Taula ${taula.id.toString()}',
+                  'Mesa ${taula.id.toString()}',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,

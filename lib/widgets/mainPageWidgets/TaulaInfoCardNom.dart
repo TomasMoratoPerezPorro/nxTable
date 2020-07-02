@@ -17,7 +17,7 @@ class TaulaInfoCardNom extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(5),
               child: Text(
-                (taula.isreserva ? taula.reserva.nom : 'Lliure'),
+                (taula.isreserva ? taula.reserva.nom : 'Libre'),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,

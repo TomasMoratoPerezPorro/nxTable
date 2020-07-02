@@ -33,6 +33,7 @@ class _SignInPageBodyState extends State<_SignInPageBody> {
   bool _showLoading = false;
   TextEditingController _ctrlEmail, _ctrlPassword;
   bool signButtonActive = false;
+  bool isLargeScreen;
 
   @override
   void initState() {
@@ -148,6 +149,11 @@ class _SignInPageBodyState extends State<_SignInPageBody> {
 
   @override
   Widget build(BuildContext context) {
+    if (MediaQuery.of(context).size.height > 700) {
+      isLargeScreen = true;
+    } else {
+      isLargeScreen = false;
+    }
     if (_showLoading) {
       return Container(
         constraints: BoxConstraints.expand(),
@@ -177,7 +183,7 @@ class _SignInPageBodyState extends State<_SignInPageBody> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                SizedBox(height: 240),
+                isLargeScreen ? SizedBox(height: 300) : SizedBox(height: 240),
                 SizedBox(height: 24),
                 SignInTextField(SignInTextFieldType.email, _ctrlEmail),
                 SizedBox(height: 16),

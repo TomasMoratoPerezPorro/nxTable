@@ -56,6 +56,10 @@ class NewReservaProvider with ChangeNotifier {
   int get numComensalesSelected => _numComensalesSelected;
   List<int> get idTaula => _idTaula;
 
+  void setMissingCamps(bool flag) {
+    showMissingCamps = flag;
+  }
+
   Reserva createReservaObject(int torn) {
     var reserva = new Reserva.multiple(
         id: 0,

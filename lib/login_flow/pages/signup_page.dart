@@ -25,16 +25,27 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController _email = TextEditingController();
   TextEditingController _userName = TextEditingController();
   TextEditingController _password = TextEditingController();
+  bool isLargeScreen;
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("DEVICE Height = ${MediaQuery.of(context).size.height} ");
+
+    debugPrint(
+        "DEVICE Pixel ratio = ${MediaQuery.of(context).devicePixelRatio} ");
+    if (MediaQuery.of(context).size.height > 700) {
+      isLargeScreen = true;
+    } else {
+      isLargeScreen = false;
+    }
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: bgColor,
       body: Container(
         constraints: BoxConstraints.expand(),
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/signupscreen.png"),
+            image: AssetImage("assets/images/signupscreenv2.png"),
             fit: BoxFit.cover,
           ),
         ),
@@ -44,9 +55,7 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                SizedBox(height: 180),
-                
-                SizedBox(height: 24),
+                SizedBox(height: 90),
                 SignInTextField(SignInTextFieldType.email, _email),
                 SizedBox(height: 24),
                 SignInTextField(SignInTextFieldType.userName, _userName),

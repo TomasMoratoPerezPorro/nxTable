@@ -89,6 +89,10 @@ class _NewReservasPageState extends State<NewReservasPage> {
       child: Scaffold(
         backgroundColor: bgColor,
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           title: Text('Nueva Reserva'),
           backgroundColor: mainColor,
         ),
@@ -136,21 +140,35 @@ class _NewReservasPageState extends State<NewReservasPage> {
                     ? SizedBox(
                         height: 35,
                       )
-                    : Container(
-                        height: 50,
-                        width: 50,
-                        child: InkWell(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          onTap: () {
-                            if (bottomSelectedIndex < 3) {
-                              if (newReservaProvider
-                                  .canProceed(bottomSelectedIndex)) {
-                                bottomTapped(bottomSelectedIndex + 1);
+                    : Builder(
+                        builder: (context) => Container(
+                          height: 50,
+                          width: 50,
+                          child: InkWell(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            onTap: () {
+                              if (bottomSelectedIndex < 3) {
+                                if (newReservaProvider
+                                    .canProceed(bottomSelectedIndex)) {
+                                  newReservaProvider.setMissingCamps(false);
+                                  bottomTapped(bottomSelectedIndex + 1);
+                                } else {
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    behavior: SnackBarBehavior.floating,
+                                    content: Padding(
+                                      padding: const EdgeInsets.all(7),
+                                      child: Text(bottomSelectedIndex == 1
+                                          ? 'El número de comensales excede la capacidad de la mesa, añada otra mesa'
+                                          : 'Introduce todos los campos para continuar'),
+                                    ),
+                                    duration: Duration(seconds: 3),
+                                  ));
+                                }
                               }
-                            }
-                          },
-                          child: Icon(Icons.arrow_forward,
-                              size: 25, color: Colors.white),
+                            },
+                            child: Icon(Icons.arrow_forward,
+                                size: 25, color: Colors.white),
+                          ),
                         ),
                       ),
               ],

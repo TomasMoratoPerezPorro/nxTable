@@ -45,7 +45,7 @@ class TaulesGridAddReserva extends StatelessWidget {
   Widget build(BuildContext context) {
     final seleccioTaulaProvider =
         Provider.of<SeleccioTaulaProvider>(context, listen: true);
-    
+
     return seleccioTaulaProvider.reservasDia == null
         ? CircularProgressIndicator(strokeWidth: 4)
         : CustomScrollViewTaules();
@@ -191,32 +191,42 @@ class CustomScrollViewTaules extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(width: 10),
-                      SizedBox(
-                        height: 40,
-                        width: 100,
-                        child: Consumer<SeleccioTaulaProvider>(
-                          builder: (context, provider, _) => RaisedButton(
-                            color: getColor(2),
-                            child: Text(
-                              "Turno 2",
-                              style: TextStyle(fontSize: 16),
+                      Provider.of<SeleccioTaulaProvider>(context, listen: false)
+                                  .servei ==
+                              2
+                          ? SizedBox(width: 20)
+                          : Container(),
+                      Provider.of<SeleccioTaulaProvider>(context, listen: false)
+                                  .servei ==
+                              1
+                          ? Container()
+                          : SizedBox(
+                              height: 40,
+                              width: 100,
+                              child: Consumer<SeleccioTaulaProvider>(
+                                builder: (context, provider, _) => RaisedButton(
+                                  color: getColor(2),
+                                  child: Text(
+                                    "Turno 2",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  onPressed: () {
+                                    if (Provider.of<SeleccioTaulaProvider>(
+                                                context,
+                                                listen: false)
+                                            .servei ==
+                                        1) {
+                                      null;
+                                    } else {
+                                      Provider.of<SeleccioTaulaProvider>(
+                                              context,
+                                              listen: false)
+                                          .changeTaulesList(2);
+                                    }
+                                  },
+                                ),
+                              ),
                             ),
-                            onPressed: () {
-                              if (Provider.of<SeleccioTaulaProvider>(context,
-                                          listen: false)
-                                      .servei ==
-                                  1) {
-                                null;
-                              } else {
-                                Provider.of<SeleccioTaulaProvider>(context,
-                                        listen: false)
-                                    .changeTaulesList(2);
-                              }
-                            },
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                   SizedBox(height: 10),

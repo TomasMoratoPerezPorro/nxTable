@@ -47,7 +47,7 @@ class TaulesGrid extends StatelessWidget {
                 margin: EdgeInsets.only(top: 10),
                 padding: EdgeInsets.only(right: 40, left: 40),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(
@@ -67,32 +67,34 @@ class TaulesGrid extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 40,
-                      width: 100,
-                      child: Consumer<ServeiProvider>(
-                        builder: (context, provider, _) => RaisedButton(
-                          color: getColor(2),
-                          child: Text(
-                            "Turno 2",
-                            style: TextStyle(fontSize: 16),
+                    this.servei == 2 ? SizedBox(width: 20) : Container(),
+                    this.servei == 1
+                        ? Container()
+                        : SizedBox(
+                            height: 40,
+                            width: 100,
+                            child: Consumer<ServeiProvider>(
+                              builder: (context, provider, _) => RaisedButton(
+                                color: getColor(2),
+                                child: Text(
+                                  "Turno 2",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                onPressed: () {
+                                  if (Provider.of<ServeiProvider>(context,
+                                              listen: false)
+                                          .servei ==
+                                      1) {
+                                    null;
+                                  } else {
+                                    Provider.of<ServeiProvider>(context,
+                                            listen: false)
+                                        .changeTaulesList(2);
+                                  }
+                                },
+                              ),
+                            ),
                           ),
-                          onPressed: () {
-                            if (Provider.of<ServeiProvider>(context,
-                                        listen: false)
-                                    .servei ==
-                                1) {
-                              null;
-                            } else {
-                              Provider.of<ServeiProvider>(context,
-                                      listen: false)
-                                  .changeTaulesList(2);
-                            }
-                            
-                          },
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
