@@ -153,10 +153,12 @@ class UserNameWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FirebaseUser user = Provider.of<FirebaseUser>(context);
+    User user = Provider.of<User>(context);
     return FutureBuilder<DocumentSnapshot>(
-        future:
-            Firestore.instance.collection('Usuaris').document(user.uid).get(),
+        future: FirebaseFirestore.instance
+            .collection('Usuaris')
+            .doc(user.uid)
+            .get(),
         builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (!snapshot.hasData) {
             return Center(
@@ -164,7 +166,7 @@ class UserNameWidget extends StatelessWidget {
                     height: 15, width: 15, child: CircularProgressIndicator()));
           }
           final DocumentSnapshot doc = snapshot.data;
-          Map<String, dynamic> fields = doc.data;
+          Map<String, dynamic> fields = doc.data();
           return Text(fields['Name'],
               style:
                   TextStyle(fontWeight: FontWeight.bold, color: Colors.white));

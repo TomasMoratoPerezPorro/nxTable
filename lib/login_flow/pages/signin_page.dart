@@ -132,12 +132,12 @@ class _SignInPageBodyState extends State<_SignInPageBody> {
   void _createUserWithEmailAndPassword(EmailAndPassword credentials) async {
     try {
       showLoading(true);
-      AuthResult result =
+      UserCredential result =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: credentials.email,
         password: credentials.password,
       );
-      FirebaseUser user = result.user;
+      User user = result.user;
       await DatabaseService(uid: user.uid)
           .updateUserData(credentials.getterUserName);
     } on PlatformException catch (e) {
