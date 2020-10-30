@@ -15,6 +15,6 @@ If you want to check the whole memory of the project don't dubt to contact me.
 
 This whole project is not shared with an Open-Source License. You can consult it for curiosity or educational propouses but never comercialise it. 
 
-- [Tomàs Morató Pérez-Porro](https://flutter.dev/docs/get-started/codelab)
+- [Tomàs Morató Pérez-Porro](https://www.linkedin.com/in/tomasmorato/)
 - tomasmpp@gmail.com
 
