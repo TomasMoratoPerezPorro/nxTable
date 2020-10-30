@@ -1,15 +1,26 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:prototip_tfg/pages/DetailReservaPage.dart';
-import 'package:prototip_tfg/pages/NewReservaPage.dart';
-import 'package:prototip_tfg/pages/NewReservaSecondStep.dart';
 import 'package:prototip_tfg/providers/DiaProvider.dart';
 import 'package:prototip_tfg/providers/NewReservaProvider.dart';
 import 'package:prototip_tfg/widgets/mainPageWidgets/BodyTabBarView.dart';
+import 'package:prototip_tfg/widgets/mainPageWidgets/FloatingActionButtonNewReserva.dart';
+import 'package:prototip_tfg/widgets/mainPageWidgets/MenuLateral.dart';
+import 'package:prototip_tfg/widgets/mainPageWidgets/ScaffoldBottomAppBar.dart';
 import 'package:provider/provider.dart';
 
 import '../global.dart';
+
+/* MainPage WIDGET:
+- Contains a final reference to both main providers (NewReservaProvider and DiaProvider) in order to access its data.
+- Contains a GlovalKey for the drawer
+
+- Contains as a title for the AppBar widget MainPageAppBarTitle() a widget used for controlling the navigation betwen days (+24h / -24h)
+- Below that there is a TabBar in charge of switching betwen services (COMIDA - CENA)
+- At the bottom of the Scaffold there is a FloatingActionButton for creating a new reservation and starting this flow.
+- It contains a bottomNavigationBar that offers access to the Drawer (MenuLateral) and to the DatePiker flow to navigate through the calendar.
+- It's child is BodyTabBarView that contains both service tabs DinarTab and SoparTab
+
+
+ */
 
 class MainPage extends StatelessWidget {
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
@@ -17,30 +28,6 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final newReservaProvider =
         Provider.of<NewReservaProvider>(context, listen: false);
-    final diaProvider = Provider.of<DiaProvider>(context, listen: false);
-    _pickDate() async {
-      DateTime date = await showDatePicker(
-        context: context,
-        locale: const Locale('es', 'ES'),
-        firstDate: DateTime(DateTime.now().year - 5),
-        lastDate: DateTime(DateTime.now().year + 5),
-        initialDate: diaProvider.actualDia,
-        builder: (BuildContext context, Widget child) {
-          return Theme(
-            data: ThemeData.light().copyWith(
-              primaryColor: mainColor, //Head background
-              accentColor: mainColor, //selection color
-              //dialogBackgroundColor: Colors.white,//Background color
-              colorScheme: ColorScheme.light(primary: mainColor),
-              buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
-            ),
-            child: child,
-          );
-        },
-      );
-
-      if (date != null) diaProvider.setDay(date);
-    }
 
     return Scaffold(
       key: _drawerKey,
@@ -56,89 +43,10 @@ class MainPage extends StatelessWidget {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        foregroundColor: Colors.black,
-        backgroundColor: actionColor,
-        child: const Icon(Icons.add),
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) {
-                return NewReservasPage();
-              },
-            ),
-          ).then((result) {
-            if (newReservaProvider.reservaConfirmada) {
-              Provider.of<DiaProvider>(context, listen: false).refreshDay();
-            }
-            newReservaProvider.resetData();
-          });
-        },
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: mainColor,
-        shape: CircularNotchedRectangle(),
-        notchMargin: 4.0,
-        child: new Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            IconButton(
-              color: Colors.white,
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                _drawerKey.currentState.openDrawer();
-              },
-            ),
-            IconButton(
-              color: Colors.white,
-              icon: Icon(Icons.calendar_today),
-              onPressed: _pickDate,
-            ),
-          ],
-        ),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Row(
-                children: <Widget>[
-                  Icon(
-                    Icons.account_circle,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  UserNameWidget(),
-                ],
-              ),
-              decoration: BoxDecoration(
-                color: mainColor,
-              ),
-            ),
-            ListTile(
-              title: Text('Log Out'),
-              onTap: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.pop(context);
-              },
-            ),
-            SizedBox(
-              height: 300,
-            ),
-            Image.asset(
-              'assets/images/nxTable_logo_xxs.png',
-              height: 70,
-              width: 30,
-              fit: BoxFit.fitHeight,
-            ),
-          ],
-        ),
-      ),
+      floatingActionButton: FloatingActionButtonNewReserva(
+          newReservaProvider: newReservaProvider),
+      bottomNavigationBar: ScaffoldBottomAppBar(drawerKey: _drawerKey),
+      drawer: MenuLateral(),
       body: SafeArea(
         child: BodyTabBarView(),
       ),
@@ -146,33 +54,12 @@ class MainPage extends StatelessWidget {
   }
 }
 
-class UserNameWidget extends StatelessWidget {
-  const UserNameWidget({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    User user = Provider.of<User>(context);
-    return FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance
-            .collection('Usuaris')
-            .doc(user.uid)
-            .get(),
-        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-                child: SizedBox(
-                    height: 15, width: 15, child: CircularProgressIndicator()));
-          }
-          final DocumentSnapshot doc = snapshot.data;
-          Map<String, dynamic> fields = doc.data();
-          return Text(fields['Name'],
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white));
-        });
-  }
-}
+/* MainPageAppBarTitle: 
+Shows the actual date provided by DiaProvider in the center of the widget.
+In both sides there are two buttons in charge of changing the day and navigate forward or backwords.
+This buttons call DiaProvider method (changeDay) in charge of adding 24h duration to the actual day.
+If the boolean sent is true it goes forward, if it's false backwards (-24h)
+ */
 
 class MainPageAppBarTitle extends StatelessWidget {
   @override

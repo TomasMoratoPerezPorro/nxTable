@@ -15,8 +15,7 @@ class DinarTab extends StatelessWidget {
     } else if (Provider.of<DiaProvider>(context, listen: true)
         .connectionError) {
       return Center(
-        child:
-            ErrorMessageWidget(),
+        child: ErrorMessageWidget(),
       );
     } else {
       return ChangeNotifierProxyProvider<DiaProvider, ServeiProvider>(
@@ -40,7 +39,10 @@ class ErrorMessageWidget extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text("Parece que algo ha ido mal...",style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
+        Text(
+          "Parece que algo ha ido mal...",
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),
         Text(Provider.of<DiaProvider>(context, listen: true).errorMessage),
       ],
     );
