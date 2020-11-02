@@ -1,16 +1,20 @@
-# prototip_tfg
+# NextTable is a final degree Project by Tomàs Morató
 
-A new Flutter project.
+A mobile application for the backoffice management of restaurant bookings.
+The project is based on the full design of the brand identity and the whole development process of the app: Definition, Design, Development and Deployment.
 
-## Getting Started
+I've used UX and UCD techniques for the design and Adobe Xd for the prototype.
 
-This project is a starting point for a Flutter application.
+The development consists of an APIrest using Node.js, Express and MySQL and Flutter for the front-end.
 
-A few resources to get you started if this is your first Flutter project:
+## Fututre of the project
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+This project is a starting point for a future stable version of the app, my intention is to finish it and publish it to the play store in the future.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+If you want to check the whole memory of the project don't dubt to contact me.
+
+This whole project is not shared with an Open-Source License. You can consult it for curiosity or educational propouses but never comercialise it. 
+
+- [Tomàs Morató Pérez-Porro](https://www.linkedin.com/in/tomasmorato/)
+- tomasmpp@gmail.com
+
