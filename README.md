@@ -1,5 +1,7 @@
 # NextTable is a final degree Project by Tomàs Morató
 
+![Test Image 4](https://github.com/TomasMoratoPerezPorro/nxTable/blob/master/assets/images/PortadaNxTable.jpg)
+
 A mobile application for the backoffice management of restaurant bookings.
 The project is based on the full design of the brand identity and the whole development process of the app: Definition, Design, Development and Deployment.
 
