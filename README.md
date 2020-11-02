@@ -1,7 +1,7 @@
 # NextTable is a final degree Project by Tomàs Morató
 
-A mobile application for the internal management of restaurant bookings.
-The project conissts on the full design of the brand identity and the whole development process of the app: Definition, Design, Development and Deployment.
+A mobile application for the backoffice management of restaurant bookings.
+The project is based on the full design of the brand identity and the whole development process of the app: Definition, Design, Development and Deployment.
 
 I've used UX and UCD techniques for the design and Adobe Xd for the prototype.
 
